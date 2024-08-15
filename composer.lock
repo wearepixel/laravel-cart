@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b25e260acd3e7cf87e600ba7103131f4",
+    "content-hash": "b15572aabc5ce8af520d03870b1943ea",
     "packages": [
         {
             "name": "brick/math",
@@ -816,12 +816,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/validation.git",
-                "reference": "9398c6e24bf1b0ac12a7160f85bd0cc5e8f4305d"
+                "reference": "60474ce720aab7264ed8d75a344e8a8af911e417"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/validation/zipball/9398c6e24bf1b0ac12a7160f85bd0cc5e8f4305d",
-                "reference": "9398c6e24bf1b0ac12a7160f85bd0cc5e8f4305d",
+                "url": "https://api.github.com/repos/illuminate/validation/zipball/60474ce720aab7264ed8d75a344e8a8af911e417",
+                "reference": "60474ce720aab7264ed8d75a344e8a8af911e417",
                 "shasum": ""
             },
             "require": {
@@ -869,7 +869,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2024-08-05T13:45:12+00:00"
+            "time": "2024-08-13T17:23:08+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -1212,12 +1212,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
-                "reference": "51c0ff591e6295f21e1789e55a6e57457980895e"
+                "reference": "0470b8dc10ca08d23aeaabbed5b961c928e4d89d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/finder/zipball/51c0ff591e6295f21e1789e55a6e57457980895e",
-                "reference": "51c0ff591e6295f21e1789e55a6e57457980895e",
+                "url": "https://api.github.com/repos/symfony/finder/zipball/0470b8dc10ca08d23aeaabbed5b961c928e4d89d",
+                "reference": "0470b8dc10ca08d23aeaabbed5b961c928e4d89d",
                 "shasum": ""
             },
             "require": {
@@ -1268,7 +1268,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-12T10:26:02+00:00"
+            "time": "2024-08-13T14:29:53+00:00"
         },
         {
             "name": "symfony/http-foundation",
@@ -1276,12 +1276,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "4187b642a75b3d56ae1bf1461091eedbef2e06d6"
+                "reference": "79d0023c23d92d49c43be47c726e92366b4d3a81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/4187b642a75b3d56ae1bf1461091eedbef2e06d6",
-                "reference": "4187b642a75b3d56ae1bf1461091eedbef2e06d6",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/79d0023c23d92d49c43be47c726e92366b4d3a81",
+                "reference": "79d0023c23d92d49c43be47c726e92366b4d3a81",
                 "shasum": ""
             },
             "require": {
@@ -1345,7 +1345,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-06T10:13:58+00:00"
+            "time": "2024-08-13T12:32:31+00:00"
         },
         {
             "name": "symfony/mime",
@@ -1353,12 +1353,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/mime.git",
-                "reference": "ab31998ee18185ce4cdea28bb52ffbda575378ee"
+                "reference": "52dc06994d8ee1f97bdc6a80c758c1a6bc482f78"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/mime/zipball/ab31998ee18185ce4cdea28bb52ffbda575378ee",
-                "reference": "ab31998ee18185ce4cdea28bb52ffbda575378ee",
+                "url": "https://api.github.com/repos/symfony/mime/zipball/52dc06994d8ee1f97bdc6a80c758c1a6bc482f78",
+                "reference": "52dc06994d8ee1f97bdc6a80c758c1a6bc482f78",
                 "shasum": ""
             },
             "require": {
@@ -1429,7 +1429,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-12T12:27:03+00:00"
+            "time": "2024-08-13T14:29:53+00:00"
         },
         {
             "name": "symfony/polyfill-intl-idn",
@@ -2464,6 +2464,47 @@
                 "source": "https://github.com/Jean85/pretty-package-versions/tree/2.x"
             },
             "time": "2024-08-01T12:14:16+00:00"
+        },
+        {
+            "name": "larapack/dd",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/larapack/dd.git",
+                "reference": "561b5111a13d0094b59b5c81b1572489485fb948"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/larapack/dd/zipball/561b5111a13d0094b59b5c81b1572489485fb948",
+                "reference": "561b5111a13d0094b59b5c81b1572489485fb948",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/var-dumper": "*"
+            },
+            "default-branch": true,
+            "type": "package",
+            "autoload": {
+                "files": [
+                    "src/helper.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Mark Topper",
+                    "email": "hi@webman.io"
+                }
+            ],
+            "description": "`dd` is a helper method in Laravel. This package will add the `dd` to your application.",
+            "support": {
+                "issues": "https://github.com/larapack/dd/issues",
+                "source": "https://github.com/larapack/dd/tree/v1.1"
+            },
+            "time": "2016-12-15T09:34:34+00:00"
         },
         {
             "name": "laravel/pint",
@@ -4918,12 +4959,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "2204ca36f39ffe9bc0856123d45fd6cea52a2681"
+                "reference": "3c43d7ec3eb45e0eac993e86bee2905bfee5246b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/2204ca36f39ffe9bc0856123d45fd6cea52a2681",
-                "reference": "2204ca36f39ffe9bc0856123d45fd6cea52a2681",
+                "url": "https://api.github.com/repos/symfony/console/zipball/3c43d7ec3eb45e0eac993e86bee2905bfee5246b",
+                "reference": "3c43d7ec3eb45e0eac993e86bee2905bfee5246b",
                 "shasum": ""
             },
             "require": {
@@ -5003,7 +5044,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-08-12T10:26:02+00:00"
+            "time": "2024-08-13T14:29:53+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -5463,6 +5504,89 @@
                 }
             ],
             "time": "2024-08-12T10:26:02+00:00"
+        },
+        {
+            "name": "symfony/var-dumper",
+            "version": "7.2.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/var-dumper.git",
+                "reference": "122ba59267fc82caa8f1f509332d4b94a223013b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/122ba59267fc82caa8f1f509332d4b94a223013b",
+                "reference": "122ba59267fc82caa8f1f509332d4b94a223013b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.2",
+                "symfony/polyfill-mbstring": "~1.0"
+            },
+            "conflict": {
+                "symfony/console": "<6.4"
+            },
+            "require-dev": {
+                "ext-iconv": "*",
+                "symfony/console": "^6.4|^7.0",
+                "symfony/http-kernel": "^6.4|^7.0",
+                "symfony/process": "^6.4|^7.0",
+                "symfony/uid": "^6.4|^7.0",
+                "twig/twig": "^3.0.4"
+            },
+            "bin": [
+                "Resources/bin/var-dump-server"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "Resources/functions/dump.php"
+                ],
+                "psr-4": {
+                    "Symfony\\Component\\VarDumper\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nicolas Grekas",
+                    "email": "p@tchwork.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Provides mechanisms for walking through any arbitrary PHP variable",
+            "homepage": "https://symfony.com",
+            "keywords": [
+                "debug",
+                "dump"
+            ],
+            "support": {
+                "source": "https://github.com/symfony/var-dumper/tree/7.2"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2024-08-13T14:29:53+00:00"
         },
         {
             "name": "ta-tikoma/phpunit-architecture-test",

@@ -16,7 +16,7 @@ class CartCondition
     /**
      * the parsed raw value of the condition
      */
-    public $parsedRawValue;
+    public $parsedRawValue = 0;
 
     /**
      * @param  array  $args  (name, type, target, value)
@@ -77,12 +77,18 @@ class CartCondition
 
     /**
      * the value of this the condition
-     *
-     * @return mixed
      */
-    public function getValue()
+    public function getValue(): int|float
     {
         return $this->args['value'];
+    }
+
+    /**
+     * Set the value of this condition
+     */
+    public function setValue($value): void
+    {
+        $this->args['value'] = $value;
     }
 
     /**
@@ -123,9 +129,11 @@ class CartCondition
      *
      * @return mixed
      */
-    public function getCalculatedValue($totalOrSubTotalOrPrice)
+    public function getCalculatedValue($totalOrSubTotalOrPrice = null): int|float
     {
-        $this->apply($totalOrSubTotalOrPrice, $this->getValue());
+        if ($totalOrSubTotalOrPrice) {
+            $this->apply($totalOrSubTotalOrPrice, $this->getValue());
+        }
 
         return $this->parsedRawValue;
     }
@@ -137,6 +145,12 @@ class CartCondition
      */
     protected function apply($totalOrSubTotalOrPrice, $conditionValue)
     {
+        if ($totalOrSubTotalOrPrice <= 0) {
+            $this->parsedRawValue = 0;
+
+            return;
+        }
+
         // if value has a percentage sign on it, we will get first
         // its percentage then we will evaluate again if the value
         // has a minus or plus sign so we can decide what to do with the

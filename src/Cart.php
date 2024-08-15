@@ -360,7 +360,7 @@ class Cart
      *
      * @throws InvalidConditionException
      */
-    public function condition($condition)
+    public function condition(CartCondition $condition)
     {
         if (is_array($condition)) {
             foreach ($condition as $c) {
@@ -568,81 +568,89 @@ class Cart
      * get cart sub total
      *
      * @param  bool  $formatted
-     * @return float
      */
-    public function getSubTotal($formatted = true)
+    public function getSubTotal($formatted = true): int|float
     {
-        $cart = $this->getContent();
-
-        $sum = $cart->sum(function (ItemCollection $item) {
+        $subTotal = 0.00;
+        // add all the items together with conditions applied
+        $subTotalSum = $this->getContent()->sum(function (ItemCollection $item) {
             return $item->getPriceSumWithConditions(false);
         });
 
         // get the conditions that are meant to be applied
         // on the subtotal and apply it here before returning the subtotal
-        $conditions = $this
-            ->getConditions()
-            ->filter(function (CartCondition $cond) {
-                return $cond->getTarget() === 'subtotal';
+        $conditionsForSubtotal = $this->getConditions()
+            ->filter(function (CartCondition $condition) {
+                return $condition->getTarget() === 'subtotal';
+            })
+            ->sortBy(function (CartCondition $condition) {
+                return $condition->getOrder();
             });
 
-        // if there is no conditions, lets just return the sum
-        if (! $conditions->count()) {
-            return Helpers::formatValue($sum, $formatted, $this->config);
+        if ($conditionsForSubtotal->isEmpty()) {
+            return Helpers::formatValue($subTotalSum, $formatted, $this->config);
         }
 
-        // there are conditions, lets apply it
-        $newTotal = 0.00;
-        $process = 0;
+        $index = 0;
 
-        $conditions->each(function (CartCondition $cond) use ($sum, &$newTotal, &$process) {
+        $conditionsForSubtotal->each(function (CartCondition $condition) use ($subTotalSum, &$subTotal, &$index) {
+            $toBeCalculated = $index > 0 ? $subTotal : $subTotalSum;
 
-            // if this is the first iteration, the toBeCalculated
-            // should be the sum as initial point of value.
-            $toBeCalculated = ($process > 0) ? $newTotal : $sum;
+            $subTotal = $condition->applyCondition($toBeCalculated);
 
-            $newTotal = $cond->applyCondition($toBeCalculated);
-
-            $process++;
+            $index++;
         });
 
-        return Helpers::formatValue((float) $newTotal, $formatted, $this->config);
+        return Helpers::formatValue($subTotal, $formatted, $this->config);
     }
 
     /**
-     * the new total in which conditions are already applied
-     *
-     * @return float
+     * Get the total of the cart with conditions applied
      */
-    public function getTotal()
+    public function getTotal(): int|float
     {
+        $total = 0.00;
         $subTotal = $this->getSubTotal(false);
 
-        $newTotal = 0.00;
-
-        $process = 0;
-
-        $conditions = $this
-            ->getConditions()
-            ->filter(function (CartCondition $cond) {
-                return $cond->getTarget() === 'total';
+        $conditionsForTotal = $this->getConditions()
+            ->filter(function (CartCondition $condition) {
+                return $condition->getTarget() === 'total';
             });
 
         // if no conditions were added, just return the sub total
-        if (! $conditions->count()) {
+        if (! $conditionsForTotal->count()) {
             return Helpers::formatValue($subTotal, $this->config['format_numbers'], $this->config);
         }
 
-        $conditions
-            ->each(function (CartCondition $cond) use ($subTotal, &$newTotal, &$process) {
-                $toBeCalculated = ($process > 0) ? $newTotal : $subTotal;
+        $conditionsForTotal->each(function (CartCondition $condition) use ($subTotal, &$total) {
+            $toBeCalculated = $total > 0 ? $total : $subTotal;
 
-                $newTotal = $cond->applyCondition($toBeCalculated);
+            $total = $condition->applyCondition($toBeCalculated);
+        });
 
-                $process++;
-            });
+        return Helpers::formatValue($total, $this->config['format_numbers'], $this->config);
+    }
 
-        return Helpers::formatValue($newTotal, $this->config['format_numbers'], $this->config);
+    /**
+     * Get the calculated value for a condition by it's name
+     */
+    public function getCalculatedValueForCondition(string $conditionName): int|float
+    {
+        $conditions = $this->getConditions();
+
+        $subTotal = $this->getSubTotalWithoutConditions(false);
+
+        foreach ($conditions as $condition) {
+            $conditionValue = $condition->getCalculatedValue($subTotal);
+
+            if ($condition->getName() === $conditionName) {
+                return $conditionValue;
+            }
+
+            $subTotal -= $conditionValue;
+        }
+
+        return 0;
     }
 
     /**

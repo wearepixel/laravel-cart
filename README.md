@@ -341,12 +341,52 @@ $condition->getValue(); // the value of the condition
 $condition->getAttributes(); // the attributes of the condition, returns an empty [] if no attributes added
 ```
 
-### Calculating condition value: **Cart::getCondition('Tax: 10%')->getCalculatedValue($subTotal)**
+### Calculating condition value
+
+There are 2 ways to calculate the value of a condition:
+
+1. Using the `getCalculatedValue` method on the condition instance
+2. Using the `getCalculatedValueForCondition` method on the cart instance and passing the condition name
+
+#### Using the `getCalculatedValue` method on the condition instance
 
 ```php
 $subTotal = Cart::getSubTotal();
 $condition = Cart::getCondition('VAT 12.5%');
 $conditionCalculatedValue = $condition->getCalculatedValue($subTotal);
+```
+
+#### Using the `getCalculatedValueForCondition` method on the cart instance
+
+This method automatically calculates the value of a condition by it's name based on the order of the conditions.
+
+```php
+Cart::add([
+    'id' => 1,
+    'name' => 'Apple iPhone 15',
+    'price' => 200,
+    'quantity' => 1,
+    'attributes' => [],
+]);
+
+$couponDiscount = new CartCondition([
+    'name' => 'Coupon Discount',
+    'type' => 'discount',
+    'target' => 'subtotal',
+    'value' => '-200',
+    'order' => 1,
+]);
+
+$giftCard = new CartCondition([
+    'name' => 'Gift Card',
+    'type' => 'discount',
+    'target' => 'subtotal',
+    'value' => '-200',
+    'order' => 2,
+]);
+
+Cart::getCalculatedValueForCondition('Coupon Discount'); // returns 200
+Cart::getCalculatedValueForCondition('Gift Card'); // returns 0 as the coupon discount is applied first and brings the subtotal to 0
 ```
 
 ### Condition on items

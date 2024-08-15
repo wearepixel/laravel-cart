@@ -21,39 +21,50 @@ afterEach(function () {
     Mockery::close();
 });
 
-test('cart can add item', function () {
-    $this->cart->add(455, 'Sample Item', 100.99, 2, []);
+describe('cart', function () {
+    test('can add an item', function () {
+        $this->cart->add(1, 'Sample Item', 100.99, 2, []);
 
-    expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
-    expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
-    expect($this->cart->getContent()->first()['id'])->toEqual(455, 'Item added has ID of 455 so first content ID should be 455');
-    expect($this->cart->getContent()->first()['price'])->toEqual(100.99, 'Item added has price of 100.99 so first content price should be 100.99');
-});
+        expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
+        expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
+        expect($this->cart->getContent()->first()['id'])->toEqual(1, 'Item added has ID of 1 so first content ID should be 1');
+        expect($this->cart->getContent()->first()['price'])->toEqual(100.99, 'Item added has price of 100.99 so first content price should be 100.99');
+    });
 
-test('cart can add item with no price', function () {
-    $this->cart->add(455, 'Sample Item', 0, 2, []);
+    test('can add an item in cents', function () {
+        $this->cart->add(1, 'Sample Item', 10099, 2, []);
 
-    expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
-    expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
-    expect($this->cart->getContent()->first()['id'])->toEqual(455, 'Item added has ID of 455 so first content ID should be 455');
-    expect($this->cart->getTotal())->toEqual(0, 'Total should be 0');
-});
+        expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
+        expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
+        expect($this->cart->getContent()->first()['id'])->toEqual(1, 'Item added has ID of 1 so first content ID should be 1');
+        expect($this->cart->getContent()->first()['price'])->toEqual(10099, 'Item added has price of 100.99 so first content price should be 100.99');
+    })->only();
 
-test('cart can add items as array', function () {
-    $item = [
-        'id' => 456,
-        'name' => 'Sample Item',
-        'price' => 67.99,
-        'quantity' => 4,
-        'attributes' => [],
-    ];
+    test('can add an item with no price', function () {
+        $this->cart->add(455, 'Sample Item', 0, 2, []);
 
-    $this->cart->add($item);
+        expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
+        expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
+        expect($this->cart->getContent()->first()['id'])->toEqual(455, 'Item added has ID of 455 so first content ID should be 455');
+        expect($this->cart->getTotal())->toEqual(0, 'Total should be 0');
+    });
 
-    expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
-    expect($this->cart->getContent()->count())->toEqual(1, 'Cart should have 1 item on it');
-    expect($this->cart->getContent()->first()['id'])->toEqual(456, 'The first content must have ID of 456');
-    expect($this->cart->getContent()->first()['name'])->toEqual('Sample Item', 'The first content must have name of "Sample Item"');
+    test('can add items as array', function () {
+        $item = [
+            'id' => 456,
+            'name' => 'Sample Item',
+            'price' => 67.99,
+            'quantity' => 4,
+            'attributes' => [],
+        ];
+
+        $this->cart->add($item);
+
+        expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
+        expect($this->cart->getContent()->count())->toEqual(1, 'Cart should have 1 item on it');
+        expect($this->cart->getContent()->first()['id'])->toEqual(456, 'The first content must have ID of 456');
+        expect($this->cart->getContent()->first()['name'])->toEqual('Sample Item', 'The first content must have name of "Sample Item"');
+    });
 });
 
 test('cart can add items with multidimensional array', function () {
