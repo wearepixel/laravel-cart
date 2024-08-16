@@ -43,6 +43,39 @@ You can publish the configuration file to customize various options.
 php artisan vendor:publish --provider="Wearepixel\Cart\CartServiceProvider" --tag="config"
 ```
 
+### Formatting Numbers
+
+The package by default does not use round to format numbers, and instead returns the number using floatval().
+
+If you'd prefer this number to be rounded, you can customize the formatting in the configuration file.
+
+Defaults to false.
+
+```php
+'format_numbers' => env('LARAVEL_CART_FORMAT_VALUES', false),
+'round_mode' => env('LARAVEL_CART_ROUND_MODE', 'down'),
+```
+
+### Decimals
+
+You can customize the number of decimals in the configuration file.
+
+Defaults to 2.
+
+```php
+'decimals' => env('LARAVEL_CART_DECIMALS', 2),
+```
+
+### Round Mode
+
+The package uses the `round` function to round the prices. You can customize the rounding mode in the configuration file.
+
+Defaults to `down`.
+
+```php
+'round_mode' => env('LARAVEL_CART_ROUND_MODE', 'down'),
+```
+
 ## HOW TO USE
 
 -   [Usage](#usage)
