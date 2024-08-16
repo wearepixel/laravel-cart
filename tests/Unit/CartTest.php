@@ -49,6 +49,21 @@ describe('cart', function () {
         expect($this->cart->getTotal())->toEqual(0, 'Total should be 0');
     });
 
+    test('can add an item without attributes', function () {
+        $item = [
+            'id' => 1,
+            'name' => 'Pocket Shorts',
+            'price' => 67.99,
+            'quantity' => 2,
+        ];
+
+        $this->cart->add($item);
+
+        expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
+        expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
+        expect($this->cart->getTotal())->toEqual(135.98, 'Cart total should be 135.98');
+    });
+
     test('can add items as array', function () {
         $item = [
             'id' => 456,
@@ -65,82 +80,132 @@ describe('cart', function () {
         expect($this->cart->getContent()->first()['id'])->toEqual(456, 'The first content must have ID of 456');
         expect($this->cart->getContent()->first()['name'])->toEqual('Sample Item', 'The first content must have name of "Sample Item"');
     });
-});
 
-test('cart can add items with multidimensional array', function () {
-    $items = [
-        [
-            'id' => 456,
-            'name' => 'Sample Item 1',
+    test('can add multiple items with an array', function () {
+        $items = [
+            [
+                'id' => 1,
+                'name' => 'Half Button Open Collar',
+                'price' => 71.99,
+                'quantity' => 1,
+                'attributes' => [],
+            ],
+            [
+                'id' => 2,
+                'name' => 'Oli Crew Neck',
+                'price' => 59.99,
+                'quantity' => 1,
+                'attributes' => [],
+            ],
+            [
+                'id' => 3,
+                'name' => 'Denim Shorts',
+                'price' => 69.99,
+                'quantity' => 3,
+                'attributes' => [],
+            ],
+        ];
+
+        $this->cart->add($items);
+
+        expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
+        expect($this->cart->getContent()->toArray())->toHaveCount(3, 'Cart should have 3 items');
+        expect($this->cart->getTotal())->toEqual(341.95, 'Cart should have a total of 341.95');
+    });
+
+    test('can update a cart item with new attributes and it should be still instance of item attribute collection', function () {
+        $item = [
+            'id' => 1,
+            'name' => 'Leather Shows',
             'price' => 67.99,
             'quantity' => 4,
-            'attributes' => [],
-        ],
-        [
-            'id' => 568,
-            'name' => 'Sample Item 2',
-            'price' => 69.25,
-            'quantity' => 4,
-            'attributes' => [],
-        ],
-        [
-            'id' => 856,
-            'name' => 'Sample Item 3',
-            'price' => 50.25,
-            'quantity' => 4,
-            'attributes' => [],
-        ],
-    ];
+            'attributes' => [
+                'product_id' => '145',
+                'color' => 'red',
+            ],
+        ];
 
-    $this->cart->add($items);
+        $this->cart->add($item);
 
-    expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
-    expect($this->cart->getContent()->toArray())->toHaveCount(3, 'Cart should have 3 items');
-});
+        $item = $this->cart->get(1);
 
-test('cart can add item without attributes', function () {
-    $item = [
-        'id' => 456,
-        'name' => 'Sample Item 1',
-        'price' => 67.99,
-        'quantity' => 4,
-    ];
+        expect($item->attributes)->toBeInstanceOf('Wearepixel\\Cart\\ItemAttributeCollection');
 
-    $this->cart->add($item);
+        // now lets update the item with its new attributes
+        // when we get that item from cart, it should still be an instance of ItemAttributeCollection
+        $updatedItem = [
+            'attributes' => [
+                'product_id' => '145',
+                'color' => 'red',
+            ],
+        ];
 
-    expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
-});
+        $this->cart->update(1, $updatedItem);
 
-test('cart update with attribute then attributes should be still instance of item attribute collection', function () {
-    $item = [
-        'id' => 456,
-        'name' => 'Sample Item 1',
-        'price' => 67.99,
-        'quantity' => 4,
-        'attributes' => [
-            'product_id' => '145',
-            'color' => 'red',
-        ],
-    ];
-    $this->cart->add($item);
+        expect($item->attributes)->toBeInstanceOf('Wearepixel\\Cart\\ItemAttributeCollection');
+    });
 
-    // lets get the attribute and prove first its an instance of
-    // ItemAttributeCollection
-    $item = $this->cart->get(456);
+    test('item orders are preserved by the order they are added', function () {
+        $items = [
+            [
+                'id' => 50,
+                'name' => 'Leather Shows',
+                'price' => 67.99,
+                'quantity' => 4,
+                'attributes' => [
+                    'product_id' => '145',
+                    'color' => 'red',
+                ],
+            ],
+            [
+                'id' => 2,
+                'name' => 'Oli Crew Neck',
+                'price' => 59.99,
+                'quantity' => 1,
+                'attributes' => [],
+            ],
+        ];
 
-    expect($item->attributes)->toBeInstanceOf('Wearepixel\Cart\ItemAttributeCollection');
+        $this->cart->add($items);
 
-    // now lets update the item with its new attributes
-    // when we get that item from cart, it should still be an instance of ItemAttributeCollection
-    $updatedItem = [
-        'attributes' => [
-            'product_id' => '145',
-            'color' => 'red',
-        ],
-    ];
-    $this->cart->update(456, $updatedItem);
+        $items = $this->cart->getContent();
 
-    expect($item->attributes)->toBeInstanceOf('Wearepixel\Cart\ItemAttributeCollection');
+        expect($items->toArray())->toHaveCount(2, 'Cart should have 2 items');
+        expect($items->first()->id)->toEqual(50, 'First item should have ID of 1');
+        expect($items->last()->id)->toEqual(2, 'Last item should have ID of 2');
+    });
+
+    test('item orders are preserved by the order they are added even when items are updated', function () {
+        $items = [
+            [
+                'id' => 50,
+                'name' => 'Leather Shows',
+                'price' => 67.99,
+                'quantity' => 4,
+                'attributes' => [
+                    'product_id' => '145',
+                    'color' => 'red',
+                ],
+            ],
+            [
+                'id' => 2,
+                'name' => 'Oli Crew Neck',
+                'price' => 59.99,
+                'quantity' => 1,
+                'attributes' => [],
+            ],
+        ];
+
+        $this->cart->add($items);
+
+        $this->cart->update(50, ['name' => 'Updated Name']);
+
+        $items = $this->cart->getContent();
+
+        expect($items->toArray())->toHaveCount(2, 'Cart should have 2 items');
+        expect($items->first()->id)->toEqual(50, 'First item should have ID of 1');
+        expect($items->last()->id)->toEqual(2, 'Last item should have ID of 2');
+    });
 });
 
 test('cart items attributes', function () {
