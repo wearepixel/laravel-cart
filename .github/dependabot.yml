@@ -3,15 +3,15 @@ version: 2
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "develop"
+    target-branch: "master"
     schedule:
       interval: "weekly"
     labels:
-      - "dependencies"
+      - "deps"
   - package-ecosystem: "composer"
     directory: "/"
-    target-branch: "develop"
+    target-branch: "master"
     schedule:
       interval: "weekly"
     labels:
-      - "dependencies"
+      - "deps"

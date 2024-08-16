@@ -25,15 +25,10 @@ class Helpers
     }
 
     /**
-     * check if array is multi dimensional array
-     * This will only check the first element of the array if it is still an array
-     * to decide that it is a multi dimensional, if you want to check the array strictly
-     * with all on its element, flag the second argument as true
-     *
-     * @param  bool  $recursive
-     * @return bool
+     * Check if array is multi dimensional array
+     * This will only check if the first element of the array is an array
      */
-    public static function isMultiArray($array, $recursive = false)
+    public static function isMultiArray(array $array, bool $recursive = false): bool
     {
         if ($recursive) {
             return (count($array) == count($array, COUNT_RECURSIVE)) ? false : true;
@@ -45,8 +40,9 @@ class Helpers
                     return false;
                 }
             }
-
         }
+
+        return false;
     }
 
     /**
