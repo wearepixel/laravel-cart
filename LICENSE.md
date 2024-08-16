@@ -1,6 +1,6 @@
 The MIT License (MIT)
 
-Copyright (c) Pixel <hello@wearepixel.com.au>
+Copyright (c) Pixel Digital Pty Ltd <hello@wearepixel.com.au>
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
