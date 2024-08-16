@@ -113,6 +113,13 @@ describe('cart', function () {
         expect($this->cart->getTotal())->toEqual(341.95, 'Cart should have a total of 341.95');
     });
 
+    test('cart item prices should be normalized when added to cart', function () {
+        // add a price in a string format should be converted to float
+        $this->cart->add(1, 'Book of Languages Item', '100.99', 2, []);
+
+        expect($this->cart->getContent()->first()['price'])->toBeFloat('Cart price should be a float');
+    });
+
     test('can update a cart item with new attributes and it should be still instance of item attribute collection', function () {
         $item = [
             'id' => 1,
@@ -206,6 +213,76 @@ describe('cart', function () {
         expect($items->first()->id)->toEqual(50, 'First item should have ID of 1');
         expect($items->last()->id)->toEqual(2, 'Last item should have ID of 2');
     });
+
+    test('can update existing items', function () {
+        $items = [
+            [
+                'id' => 1,
+                'name' => 'Magic The Gathering Card Pack',
+                'price' => 12.99,
+                'quantity' => 3,
+                'attributes' => [],
+            ],
+            [
+                'id' => 2,
+                'name' => 'Magic The Gathering Card Case',
+                'price' => 39.99,
+                'quantity' => 1,
+                'attributes' => [],
+            ],
+        ];
+
+        $this->cart->add($items);
+
+        $item = $this->cart->get(1);
+
+        expect($item['name'])->toEqual('Magic The Gathering Card Pack', 'Item name should be "Magic The Gathering Card Pack"');
+        expect($item['price'])->toEqual(12.99, 'Item price should be "12.99"');
+        expect($item['quantity'])->toEqual(3, 'Item quantity should be 3');
+
+        // when cart's item quantity is updated, the subtotal should be updated as well
+        $this->cart->update(1, [
+            'name' => 'Magic The Gathering Card Packs',
+            'quantity' => 2,
+            'price' => 10.20,
+        ]);
+
+        $item = $this->cart->get(1);
+
+        expect($item['name'])->toEqual('Magic The Gathering Card Packs', 'Item name should be "Magic The Gathering Card Packs"');
+        expect($item['price'])->toEqual(10.20, 'Item price should be 10.20');
+        expect($item['quantity'])->toEqual(5, 'Item quantity should be 2');
+    });
+
+    test('can update existing item quanties with decimals', function () {
+        $items = [
+            'id' => 1,
+            'name' => 'Fertilizer',
+            'price' => 30,
+            'quantity' => 7.8,
+            'attributes' => [
+                'unit' => 'kilogram',
+            ],
+        ];
+
+        $this->cart->add($items);
+
+        $item = $this->cart->get(1);
+
+        expect($item['quantity'])->toEqual(7.8, 'Item quantity should be 7.8');
+
+        // when cart's item quantity is updated, the subtotal should be updated as well
+        $this->cart->update(1, [
+            'quantity' => [
+                'relative' => true,
+                'value' => 2.1,
+            ],
+        ]);
+
+        $item = $this->cart->get(1);
+
+        expect($item['quantity'])->toEqual(9.9, 'Item quantity should be 9.9');
+    });
 });
 
 test('cart items attributes', function () {
@@ -296,13 +373,6 @@ test('cart update existing item with quantity as array and not relative', functi
 
     $item = $this->cart->get($itemIdToEvaluate);
     expect($item['quantity'])->toEqual(5, 'Item quantity should be 5');
-});
-
-test('item price should be normalized when added to cart', function () {
-    // add a price in a string format should be converted to float
-    $this->cart->add(455, 'Sample Item', '100.99', 2, []);
-
-    expect($this->cart->getContent()->first()['price'])->toBeFloat('Cart price should be a float');
 });
 
 test('it removes an item on cart by item id', function () {
