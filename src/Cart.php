@@ -226,18 +226,10 @@ class Cart
         $item = $cart->get($id);
 
         foreach ($data as $key => $value) {
-            // if the key is currently "quantity" we will need to check if an arithmetic
-            // symbol is present so we can decide if the update of quantity is being added
-            // or being reduced.
             if ($key == 'quantity') {
-                // we will check if quantity value provided is array,
-                // if it is, we will need to check if a key "relative" is set
-                // and we will evaluate its value if true or false,
-                // this tells us how to treat the quantity value if it should be updated
-                // relatively to its current quantity value or just totally replace the value
                 if (is_array($value)) {
                     if (isset($value['relative'])) {
-                        if ((bool) $value['relative']) {
+                        if (isset($value['relative']) && $value['relative'] === true) {
                             $item = $this->updateQuantityRelative($item, $key, $value['value']);
                         } else {
                             $item = $this->updateQuantityNotRelative($item, $key, $value['value']);
@@ -791,7 +783,7 @@ class Cart
     protected function updateQuantityRelative($item, $key, $value)
     {
         if (preg_match('/\-/', $value) == 1) {
-            $value = (int) str_replace('-', '', $value);
+            $value = (float) str_replace('-', '', $value);
 
             // we will not allowed to reduced quantity to 0, so if the given value
             // would result to item quantity of 0, we will not do it.
@@ -799,9 +791,9 @@ class Cart
                 $item[$key] -= $value;
             }
         } elseif (preg_match('/\+/', $value) == 1) {
-            $item[$key] += (int) str_replace('+', '', $value);
+            $item[$key] += (float) str_replace('+', '', $value);
         } else {
-            $item[$key] += (int) $value;
+            $item[$key] += (float) $value;
         }
 
         return $item;
@@ -814,7 +806,7 @@ class Cart
      */
     protected function updateQuantityNotRelative($item, $key, $value)
     {
-        $item[$key] = (int) $value;
+        $item[$key] = (float) $value;
 
         return $item;
     }
