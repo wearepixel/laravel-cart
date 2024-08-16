@@ -196,11 +196,9 @@ class Cart
 
         // if the item is already in the cart we will just update it
         if ($cart->has($id)) {
-
             $this->update($id, $item);
         } else {
-
-            $this->addRow($id, $item);
+            $this->addItem($id, $item);
         }
 
         $this->currentItemId = $id;
@@ -225,7 +223,7 @@ class Cart
 
         $cart = $this->getContent();
 
-        $item = $cart->pull($id);
+        $item = $cart->get($id);
 
         foreach ($data as $key => $value) {
             // if the key is currently "quantity" we will need to check if an arithmetic
@@ -255,6 +253,7 @@ class Cart
             }
         }
 
+        // update the item in the cart
         $cart->put($id, $item);
 
         $this->save($cart);
@@ -725,7 +724,7 @@ class Cart
      *
      * @return bool
      */
-    protected function addRow($id, $item)
+    protected function addItem($id, $item)
     {
         if ($this->fireEvent('adding', $item) === false) {
             return false;
