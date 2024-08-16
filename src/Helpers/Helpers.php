@@ -5,13 +5,23 @@ namespace Wearepixel\Cart\Helpers;
 class Helpers
 {
     /**
-     * normalize price
-     *
-     * @return float
+     * Normalize prices
      */
-    public static function normalizePrice($price)
+    public static function normalizePrice($price): float
     {
         return (is_string($price)) ? floatval($price) : $price;
+    }
+
+    /**
+     * Get the rounding mode
+     */
+    public static function roundMode($config): int
+    {
+        if (isset($config['round_mode']) && $config['round_mode'] == 'up') {
+            return PHP_ROUND_HALF_UP;
+        }
+
+        return PHP_ROUND_HALF_DOWN;
     }
 
     /**
@@ -61,7 +71,7 @@ class Helpers
         }
 
         if ($formatNumber || $config['format_numbers']) {
-            return floatval(number_format($value, $config['decimals'], $config['dec_point'], $config['thousands_sep']));
+            return round($value, $config['decimals'], self::roundMode($config));
         } else {
             return floatval($value);
         }

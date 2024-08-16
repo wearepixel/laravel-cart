@@ -10,9 +10,7 @@ return [
 
     'decimals' => env('LARAVEL_CART_DECIMALS', 0),
 
-    'dec_point' => env('LARAVEL_CART_DEC_POINT', '.'),
-
-    'thousands_sep' => env('LARAVEL_CART_THOUSANDS_SEP', ','),
+    'round_mode' => env('LARAVEL_CART_ROUND_MODE', 'down'),
 
     /*
      * ---------------------------------------------------------------
