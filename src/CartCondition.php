@@ -78,7 +78,7 @@ class CartCondition
     /**
      * the value of this the condition
      */
-    public function getValue(): int|float
+    public function getValue(): int|float|string
     {
         return $this->args['value'];
     }

@@ -790,7 +790,7 @@ describe('cart level conditions', function () {
         expect($this->cart->getCalculatedValueForCondition('Gift Card'))->toEqual(0, 'Gift Card should be 0');
         expect($couponDiscount->getCalculatedValue())->toEqual(200.0, 'Coupon Discount value should be 200.0');
         expect($giftCard->getCalculatedValue())->toEqual(0, 'Gift Card value should be 0');
-    })->only();
+    });
 });
 
 describe('item level conditions', function () {

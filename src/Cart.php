@@ -569,7 +569,7 @@ class Cart
      *
      * @param  bool  $formatted
      */
-    public function getSubTotal($formatted = true): int|float
+    public function getSubTotal($formatted = true): int|float|string
     {
         $subTotal = 0.00;
         // add all the items together with conditions applied

@@ -38,7 +38,7 @@ describe('cart', function () {
         expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
         expect($this->cart->getContent()->first()['id'])->toEqual(1, 'Item added has ID of 1 so first content ID should be 1');
         expect($this->cart->getContent()->first()['price'])->toEqual(10099, 'Item added has price of 100.99 so first content price should be 100.99');
-    })->only();
+    });
 
     test('can add an item with no price', function () {
         $this->cart->add(455, 'Sample Item', 0, 2, []);

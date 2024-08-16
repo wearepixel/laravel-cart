@@ -3,34 +3,28 @@
 return [
     /*
      * ---------------------------------------------------------------
-     * formatting
+     * Formatting
      * ---------------------------------------------------------------
-     *
-     * the formatting of shopping cart values
      */
-    'format_numbers' => env('SHOPPING_FORMAT_VALUES', false),
+    'format_numbers' => env('LARAVEL_CART_FORMAT_VALUES', false),
 
-    'decimals' => env('SHOPPING_DECIMALS', 0),
+    'decimals' => env('LARAVEL_CART_DECIMALS', 0),
 
-    'dec_point' => env('SHOPPING_DEC_POINT', '.'),
+    'dec_point' => env('LARAVEL_CART_DEC_POINT', '.'),
 
-    'thousands_sep' => env('SHOPPING_THOUSANDS_SEP', ','),
+    'thousands_sep' => env('LARAVEL_CART_THOUSANDS_SEP', ','),
 
     /*
      * ---------------------------------------------------------------
-     * persistence
+     * Persistence
      * ---------------------------------------------------------------
-     *
-     * the configuration for persisting cart
      */
     'storage' => null,
 
     /*
      * ---------------------------------------------------------------
-     * events
+     * Events
      * ---------------------------------------------------------------
-     *
-     * the configuration for cart events
      */
     'events' => null,
 ];

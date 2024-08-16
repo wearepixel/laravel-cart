@@ -63,7 +63,7 @@ class Helpers
         if ($formatNumber || $config['format_numbers']) {
             return floatval(number_format($value, $config['decimals'], $config['dec_point'], $config['thousands_sep']));
         } else {
-            return $value;
+            return floatval($value);
         }
     }
 }
