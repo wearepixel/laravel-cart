@@ -499,8 +499,16 @@ Cart::addItemCondition(456, $condition);
 
 ### Clearing Cart Conditions: **Cart::clearCartConditions()**
 
+This clears all cart level conditions, and does not affect item level conditions.
+
 ```php
 Cart::clearCartConditions()
+```
+
+If you wish to clear all conditions from all items and the cart, use **Cart::clearAllConditions()**
+
+```php
+Cart::clearAllConditions()
 ```
 
 ### Remove a specific cart condtion: **Cart::removeCartCondition($conditionName)**

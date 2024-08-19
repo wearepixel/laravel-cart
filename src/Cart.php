@@ -131,20 +131,20 @@ class Cart
      * add item to the cart, it can be an array or multi dimensional array
      *
      * @param  string|array  $id
-     * @param  string  $name
-     * @param  float  $price
-     * @param  int  $quantity
-     * @param  array  $attributes
-     * @param  CartCondition|array  $conditions
-     * @param  string  $associatedModel
      * @return $this
      *
      * @throws InvalidItemException
      */
-    public function add($id, $name = null, $price = null, $quantity = null, $attributes = [], $conditions = [], $associatedModel = null)
-    {
-        // if the first argument is an array,
-        // we will need to call add again
+    public function add(
+        string|int|array $id,
+        ?string $name = null,
+        ?float $price = null,
+        int|float|null $quantity = null,
+        array $attributes = [],
+        array|CartCondition $conditions = [],
+        ?string $associatedModel = null
+    ): self {
+        // check if its an array of items
         if (is_array($id)) {
             // the first argument is an array, now we will need to check if it is a multi dimensional
             // array, if so, we will iterate through each item and call add again
@@ -192,10 +192,10 @@ class Cart
         $item = $this->validate($data);
 
         // get the cart
-        $cart = $this->getContent();
+        $inCart = $this->get($id);
 
         // if the item is already in the cart we will just update it
-        if ($cart->has($id)) {
+        if ($inCart) {
             $this->update($id, $item);
         } else {
             $this->addItem($id, $item);
@@ -207,15 +207,9 @@ class Cart
     }
 
     /**
-     * update a cart
-     *
-     * @param  array  $data
-     *
-     * the $data will be an associative array, you don't need to pass all the data, only the key value
-     * of the item you want to update on it
-     * @return bool
+     * Update a cart item with whatever data is passed in
      */
-    public function update($id, $data)
+    public function update(int|string $id, array $data): bool
     {
         if ($this->fireEvent('updating', $data) === false) {
             return false;
@@ -344,14 +338,11 @@ class Cart
     }
 
     /**
-     * add a condition on the cart
-     *
-     * @param  CartCondition|array  $condition
-     * @return $this
+     * Adds a condition to the cart
      *
      * @throws InvalidConditionException
      */
-    public function condition(CartCondition $condition)
+    public function condition(array|CartCondition $condition): self
     {
         if (is_array($condition)) {
             foreach ($condition as $c) {
@@ -524,18 +515,28 @@ class Cart
     }
 
     /**
-     * clears all conditions on a cart,
-     * this does not remove conditions that has been added specifically to an item/product.
-     * If you wish to remove a specific condition to a product, you may use the method: removeItemCondition($itemId, $conditionName)
-     *
-     * @return void
+     * Clear cart conditions (this does not clear item conditions)
      */
-    public function clearCartConditions()
+    public function clearCartConditions(): void
     {
         $this->session->put(
             $this->sessionKeyCartConditions,
             []
         );
+    }
+
+    /**
+     * Clear all conditions from all items and the cart
+     */
+    public function clearAllConditions(): void
+    {
+        $cart = $this->getContent();
+
+        $cart->each(function ($item) {
+            $this->clearItemConditions($item->id);
+        });
+
+        $this->clearCartConditions();
     }
 
     /**
