@@ -145,12 +145,6 @@ class CartCondition
      */
     protected function apply($totalOrSubTotalOrPrice, $conditionValue)
     {
-        if ($totalOrSubTotalOrPrice <= 0) {
-            $this->parsedRawValue = 0;
-
-            return;
-        }
-
         // if value has a percentage sign on it, we will get first
         // its percentage then we will evaluate again if the value
         // has a minus or plus sign so we can decide what to do with the
