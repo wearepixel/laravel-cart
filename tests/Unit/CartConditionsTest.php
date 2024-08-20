@@ -825,6 +825,96 @@ describe('cart level conditions', function () {
 
         expect($this->cart->getConditions()->count())->toEqual(0, 'Cart should have no conditions now');
     });
+
+    test('calculate the subtotal correctly when one condition makes it $0, and the other adds $10', function () {
+        $this->cart->add([
+            [
+                'id' => 456,
+                'name' => 'Sample Item 1',
+                'price' => 67.99,
+                'quantity' => 1,
+                'attributes' => [],
+            ],
+            [
+                'id' => 568,
+                'name' => 'Sample Item 2',
+                'price' => 69.25,
+                'quantity' => 1,
+                'attributes' => [],
+            ],
+        ]);
+
+        expect($this->cart->getSubTotal())->toEqual(137.24, 'Cart should have sub total of 137.24');
+        expect($this->cart->getTotal())->toEqual(137.24, 'Cart should have total of 137.24');
+
+        // add conditions
+        $couponCode = new CartCondition([
+            'name' => 'Coupon code',
+            'type' => 'discount',
+            'target' => 'subtotal',
+            'order' => '1',
+            'value' => '-100%',
+        ]);
+
+        $shipping = new CartCondition([
+            'name' => 'Shipping',
+            'type' => 'shipping',
+            'target' => 'subtotal',
+            'order' => '2',
+            'value' => '10',
+        ]);
+
+        $this->cart->condition($couponCode);
+        $this->cart->condition($shipping);
+
+        expect($this->cart->getSubTotal())->toEqual(10.00, 'Cart should have sub total of 10.00');
+        expect($this->cart->getTotal())->toEqual(10.00, 'Cart should have a total of 10.00');
+    });
+
+    test('calculate the subtotal correctly when one condition makes it $0 (with dollars), and the other adds $10', function () {
+        $this->cart->add([
+            [
+                'id' => 456,
+                'name' => 'Sample Item 1',
+                'price' => 67.99,
+                'quantity' => 1,
+                'attributes' => [],
+            ],
+            [
+                'id' => 568,
+                'name' => 'Sample Item 2',
+                'price' => 69.25,
+                'quantity' => 1,
+                'attributes' => [],
+            ],
+        ]);
+
+        expect($this->cart->getSubTotal())->toEqual(137.24, 'Cart should have sub total of 137.24');
+        expect($this->cart->getTotal())->toEqual(137.24, 'Cart should have total of 137.24');
+
+        // add conditions
+        $couponCode = new CartCondition([
+            'name' => 'Coupon code',
+            'type' => 'discount',
+            'target' => 'subtotal',
+            'order' => '1',
+            'value' => '-137.24',
+        ]);
+
+        $shipping = new CartCondition([
+            'name' => 'Shipping',
+            'type' => 'shipping',
+            'target' => 'subtotal',
+            'order' => '2',
+            'value' => '10',
+        ]);
+
+        $this->cart->condition($couponCode);
+        $this->cart->condition($shipping);
+
+        expect($this->cart->getSubTotal())->toEqual(10.00, 'Cart should have sub total of 10.00');
+        expect($this->cart->getTotal())->toEqual(10.00, 'Cart should have a total of 10.00');
+    });
 });
 
 describe('item level conditions', function () {
