@@ -1,6 +1,6 @@
 {
   "name": "wearepixel/laravel-cart",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A cart implementation for Laravel",
   "keywords": [
     "laravel",
