@@ -60,7 +60,7 @@ describe('cart', function () {
         expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
         expect($this->cart->getContent()->first()['id'])->toEqual(455, 'Item added has ID of 455 so first content ID should be 455');
         expect($this->cart->getTotal())->toEqual(0, 'Total should be 0');
-    })->only();
+    });
 
     test('can add an item without attributes', function () {
         $item = [
@@ -295,6 +295,24 @@ describe('cart', function () {
         $item = $this->cart->get(1);
 
         expect($item['quantity'])->toEqual(9.9, 'Item quantity should be 9.9');
+    });
+
+    test('should throw an exception when no quantity is provided', function () {
+        $this->expectException('Wearepixel\Cart\Exceptions\InvalidItemException');
+        $this->expectExceptionMessage('The quantity must be at least 0.1.');
+        $this->cart->add(455, 'Sample Item', 100.99, 0, []);
+    });
+
+    test('should throw an exception when no id is provided', function () {
+        $this->expectException('Wearepixel\Cart\Exceptions\InvalidItemException');
+        $this->expectExceptionMessage('The id field is required.');
+        $this->cart->add('', 'Sample Item', 100.99, 2, []);
+    });
+
+    test('should throw an exception when no name is provided', function () {
+        $this->expectException('Wearepixel\Cart\Exceptions\InvalidItemException');
+        $this->expectExceptionMessage('The name field is required.');
+        $this->cart->add(523, '', 100.99, 2, []);
     });
 });
 
@@ -553,21 +571,6 @@ test('item quantity update by reduced should not reduce if quantity will result 
     $this->cart->update(456, ['quantity' => -3]);
 
     expect($item['quantity'])->toEqual(3, 'Item quantity of with item ID of 456 should now be reduced to 2');
-});
-
-test('should throw exception when provided invalid values scenario one', function () {
-    $this->expectException('Wearepixel\Cart\Exceptions\InvalidItemException');
-    $this->cart->add(455, 'Sample Item', 100.99, 0, []);
-});
-
-test('should throw exception when provided invalid values scenario two', function () {
-    $this->expectException('Wearepixel\Cart\Exceptions\InvalidItemException');
-    $this->cart->add('', 'Sample Item', 100.99, 2, []);
-});
-
-test('should throw exception when provided invalid values scenario three', function () {
-    $this->expectException('Wearepixel\Cart\Exceptions\InvalidItemException');
-    $this->cart->add(523, '', 100.99, 2, []);
 });
 
 test('clearing cart', function () {
