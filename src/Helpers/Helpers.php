@@ -7,7 +7,7 @@ class Helpers
     /**
      * Normalize prices
      */
-    public static function normalizePrice($price): float
+    public static function normalizePrice($price): ?float
     {
         return (is_string($price)) ? floatval($price) : $price;
     }

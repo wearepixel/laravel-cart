@@ -164,6 +164,7 @@ class Cart
                 $this->add(
                     $id['id'],
                     $id['name'],
+                    // isset($id['price']) ? $id['price'] : null,
                     $id['price'],
                     $id['quantity'],
                     Helpers::issetAndHasValueOrAssignDefault($id['attributes'], []),
@@ -698,15 +699,17 @@ class Cart
     {
         $rules = [
             'id' => 'required',
-            'price' => 'required|numeric',
-            'quantity' => 'required|numeric|min:0.1',
             'name' => 'required',
+            'quantity' => 'required|numeric|min:0.1',
         ];
 
         $validator = CartItemValidator::make($item, $rules);
 
         if ($validator->fails()) {
-            throw new InvalidItemException($validator->messages()->first());
+            // if the error is due to quantity
+            if ($validator->errors()->first('quantity') === 'The quantity must be at least 0.1.') {
+                throw new InvalidItemException('The quantity must be at least 0.1.');
+            }
         }
 
         return $item;

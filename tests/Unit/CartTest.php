@@ -49,6 +49,19 @@ describe('cart', function () {
         expect($this->cart->getTotal())->toEqual(0, 'Total should be 0');
     });
 
+    test('can add an item an array with no price', function () {
+        $this->cart->add([
+            'id' => 455,
+            'name' => 'Sample Item',
+            'quantity' => 2,
+        ]);
+
+        expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');
+        expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
+        expect($this->cart->getContent()->first()['id'])->toEqual(455, 'Item added has ID of 455 so first content ID should be 455');
+        expect($this->cart->getTotal())->toEqual(0, 'Total should be 0');
+    })->only();
+
     test('can add an item without attributes', function () {
         $item = [
             'id' => 1,
