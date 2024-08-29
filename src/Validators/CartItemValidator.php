@@ -1,5 +1,5 @@
 <?php
 
-namespace Wearepixel\Cart\Validators;
+namespace Pixeldigital\Cart\Validators;
 
 class CartItemValidator extends Validator {}

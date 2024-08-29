@@ -1,9 +1,9 @@
 <?php
 
-namespace Wearepixel\Cart;
+namespace Pixeldigital\Cart;
 
 use Illuminate\Support\Collection;
-use Wearepixel\Cart\Helpers\Helpers;
+use Pixeldigital\Cart\Helpers\Helpers;
 
 class ItemCollection extends Collection
 {
@@ -72,7 +72,7 @@ class ItemCollection extends Collection
         if (is_array($this['conditions'])) {
             return count($this['conditions']) > 0;
         }
-        $conditionInstance = 'Wearepixel\\Cart\\CartCondition';
+        $conditionInstance = 'Pixeldigital\\Cart\\CartCondition';
         if ($this['conditions'] instanceof $conditionInstance) {
             return true;
         }

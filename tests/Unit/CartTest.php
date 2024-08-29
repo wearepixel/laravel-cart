@@ -1,8 +1,8 @@
 <?php
 
-use Wearepixel\Cart\Cart;
-use Wearepixel\Cart\Tests\Helpers\MockProduct;
-use Wearepixel\Cart\Tests\Helpers\SessionMock;
+use Pixeldigital\Cart\Cart;
+use Pixeldigital\Cart\Tests\Helpers\MockProduct;
+use Pixeldigital\Cart\Tests\Helpers\SessionMock;
 
 beforeEach(function () {
     $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
@@ -149,7 +149,7 @@ describe('cart', function () {
 
         $item = $this->cart->get(1);
 
-        expect($item->attributes)->toBeInstanceOf('Wearepixel\\Cart\\ItemAttributeCollection');
+        expect($item->attributes)->toBeInstanceOf('Pixeldigital\\Cart\\ItemAttributeCollection');
 
         // now lets update the item with its new attributes
         // when we get that item from cart, it should still be an instance of ItemAttributeCollection
@@ -162,7 +162,7 @@ describe('cart', function () {
 
         $this->cart->update(1, $updatedItem);
 
-        expect($item->attributes)->toBeInstanceOf('Wearepixel\\Cart\\ItemAttributeCollection');
+        expect($item->attributes)->toBeInstanceOf('Pixeldigital\\Cart\\ItemAttributeCollection');
     });
 
     test('item orders are preserved by the order they are added', function () {
@@ -298,19 +298,19 @@ describe('cart', function () {
     });
 
     test('should throw an exception when no quantity is provided', function () {
-        $this->expectException('Wearepixel\Cart\Exceptions\InvalidItemException');
+        $this->expectException('Pixeldigital\Cart\Exceptions\InvalidItemException');
         $this->expectExceptionMessage('The quantity must be at least 0.1.');
         $this->cart->add(455, 'Sample Item', 100.99, 0, []);
     });
 
     test('should throw an exception when no id is provided', function () {
-        $this->expectException('Wearepixel\Cart\Exceptions\InvalidItemException');
+        $this->expectException('Pixeldigital\Cart\Exceptions\InvalidItemException');
         $this->expectExceptionMessage('The id field is required.');
         $this->cart->add('', 'Sample Item', 100.99, 2, []);
     });
 
     test('should throw an exception when no name is provided', function () {
-        $this->expectException('Wearepixel\Cart\Exceptions\InvalidItemException');
+        $this->expectException('Pixeldigital\Cart\Exceptions\InvalidItemException');
         $this->expectExceptionMessage('The name field is required.');
         $this->cart->add(523, '', 100.99, 2, []);
     });
@@ -646,7 +646,7 @@ test('cart can add items as array with associated model', function () {
     expect($this->cart->getContent()->count())->toEqual(1, 'Cart should have 1 item on it');
     expect($this->cart->getContent()->first()['id'])->toEqual(456, 'The first content must have ID of 456');
     expect($this->cart->getContent()->first()['name'])->toEqual('Sample Item', 'The first content must have name of "Sample Item"');
-    expect($addedItem->model)->toBeInstanceOf('Wearepixel\Cart\Tests\Helpers\MockProduct');
+    expect($addedItem->model)->toBeInstanceOf('Pixeldigital\Cart\Tests\Helpers\MockProduct');
 });
 
 test('cart can add items with multidimensional array with associated model', function () {
@@ -681,7 +681,7 @@ test('cart can add items with multidimensional array with associated model', fun
 
     $content = $this->cart->getContent();
     foreach ($content as $item) {
-        expect($item->model)->toBeInstanceOf('Wearepixel\Cart\Tests\Helpers\MockProduct');
+        expect($item->model)->toBeInstanceOf('Pixeldigital\Cart\Tests\Helpers\MockProduct');
     }
 
     expect($this->cart->isEmpty())->toBeFalse('Cart should not be empty');

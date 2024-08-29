@@ -1,6 +1,6 @@
 {
-  "name": "wearepixel/laravel-cart",
-  "version": "1.0.6",
+  "name": "pixeldigital/laravel-cart",
+  "version": "1.0.7",
   "description": "A cart implementation for Laravel",
   "keywords": [
     "laravel",
@@ -32,17 +32,17 @@
   },
   "autoload": {
     "psr-4": {
-      "Wearepixel\\Cart\\": "src/"
+      "Pixeldigital\\Cart\\": "src/"
     }
   },
   "minimum-stability": "dev",
   "extra": {
     "laravel": {
       "providers": [
-        "Wearepixel\\Cart\\CartServiceProvider"
+        "Pixeldigital\\Cart\\CartServiceProvider"
       ],
       "aliases": {
-        "Cart": "Wearepixel\\Cart\\Facades\\CartFacade"
+        "Cart": "Pixeldigital\\Cart\\Facades\\CartFacade"
       }
     }
   },

@@ -1,6 +1,6 @@
 <?php
 
-namespace Wearepixel\Cart;
+namespace Pixeldigital\Cart;
 
 use Illuminate\Support\ServiceProvider;
 

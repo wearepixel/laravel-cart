@@ -1,6 +1,6 @@
 <?php
 
-namespace Wearepixel\Cart\Helpers;
+namespace Pixeldigital\Cart\Helpers;
 
 class Helpers
 {

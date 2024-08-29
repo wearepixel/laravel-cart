@@ -1,7 +1,7 @@
 <?php
 
-use Wearepixel\Cart\Cart;
-use Wearepixel\Cart\Tests\Helpers\SessionMock;
+use Pixeldigital\Cart\Cart;
+use Pixeldigital\Cart\Tests\Helpers\SessionMock;
 
 beforeEach(function () {});
 
