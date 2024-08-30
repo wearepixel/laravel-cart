@@ -1,5 +1,5 @@
 <?php
 
-namespace Pixeldigital\Cart\Exceptions;
+namespace Wearepixel\Cart\Exceptions;
 
 class InvalidConditionException extends \Exception {}

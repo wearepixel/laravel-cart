@@ -1,12 +1,12 @@
 <?php
 
-namespace Pixeldigital\Cart;
+namespace Wearepixel\Cart;
 
-use Pixeldigital\Cart\Helpers\Helpers;
-use Pixeldigital\Cart\Validators\CartItemValidator;
-use Pixeldigital\Cart\Exceptions\InvalidItemException;
-use Pixeldigital\Cart\Exceptions\UnknownModelException;
-use Pixeldigital\Cart\Exceptions\InvalidConditionException;
+use Wearepixel\Cart\Helpers\Helpers;
+use Wearepixel\Cart\Validators\CartItemValidator;
+use Wearepixel\Cart\Exceptions\InvalidItemException;
+use Wearepixel\Cart\Exceptions\UnknownModelException;
+use Wearepixel\Cart\Exceptions\InvalidConditionException;
 
 class Cart
 {
@@ -270,11 +270,11 @@ class Cart
     public function addItemCondition($productId, $itemCondition)
     {
         if ($product = $this->get($productId)) {
-            $conditionInstance = '\\Pixeldigital\\Cart\\CartCondition';
+            $conditionInstance = '\\Wearepixel\\Cart\\CartCondition';
 
             if ($itemCondition instanceof $conditionInstance) {
                 // we need to copy first to a temporary variable to hold the conditions
-                // to avoid hitting this error "Indirect modification of overloaded element of Pixeldigital\Cart\ItemCollection has no effect"
+                // to avoid hitting this error "Indirect modification of overloaded element of Wearepixel\Cart\ItemCollection has no effect"
                 // this is due to laravel Collection instance that implements Array Access
                 // // see link for more info: http://stackoverflow.com/questions/20053269/indirect-modification-of-overloaded-element-of-splfixedarray-has-no-effect
                 $itemConditionTempHolder = $product['conditions'];
@@ -353,7 +353,7 @@ class Cart
         }
 
         if (! $condition instanceof CartCondition) {
-            throw new InvalidConditionException('Argument 1 must be an instance of \'Pixeldigital\Cart\CartCondition\'');
+            throw new InvalidConditionException('Argument 1 must be an instance of \'Wearepixel\Cart\CartCondition\'');
         }
 
         $conditions = $this->getConditions();
@@ -479,7 +479,7 @@ class Cart
             // on the given condition name the user wants to remove, if so,
             // lets just make $item['conditions'] an empty array as there's just 1 condition on it anyway
             else {
-                $conditionInstance = 'Pixeldigital\\Cart\\CartCondition';
+                $conditionInstance = 'Wearepixel\\Cart\\CartCondition';
 
                 if ($item['conditions'] instanceof $conditionInstance) {
                     if ($tempConditionsHolder->getName() == $conditionName) {
@@ -776,7 +776,7 @@ class Cart
             return count($item['conditions']) > 0;
         }
 
-        $conditionInstance = 'Pixeldigital\\Cart\\CartCondition';
+        $conditionInstance = 'Wearepixel\\Cart\\CartCondition';
 
         if ($item['conditions'] instanceof $conditionInstance) {
             return true;

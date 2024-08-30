@@ -1,6 +1,6 @@
 <?php
 
-namespace Pixeldigital\Cart\Validators;
+namespace Wearepixel\Cart\Validators;
 
 use Illuminate\Validation\Factory;
 use Illuminate\Filesystem\Filesystem;

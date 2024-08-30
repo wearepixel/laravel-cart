@@ -1,8 +1,8 @@
 <?php
 
-use Pixeldigital\Cart\Cart;
-use Pixeldigital\Cart\CartCondition;
-use Pixeldigital\Cart\Tests\Helpers\SessionMock;
+use Wearepixel\Cart\Cart;
+use Wearepixel\Cart\CartCondition;
+use Wearepixel\Cart\Tests\Helpers\SessionMock;
 
 beforeEach(function () {
     $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');

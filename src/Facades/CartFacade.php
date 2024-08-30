@@ -1,6 +1,6 @@
 <?php
 
-namespace Pixeldigital\Cart\Facades;
+namespace Wearepixel\Cart\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

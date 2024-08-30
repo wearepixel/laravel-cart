@@ -1,9 +1,9 @@
 <?php
 
-use Pixeldigital\Cart\Cart;
-use Pixeldigital\Cart\CartCondition;
-use Pixeldigital\Cart\Tests\Helpers\MockProduct;
-use Pixeldigital\Cart\Tests\Helpers\SessionMock;
+use Wearepixel\Cart\Cart;
+use Wearepixel\Cart\CartCondition;
+use Wearepixel\Cart\Tests\Helpers\MockProduct;
+use Wearepixel\Cart\Tests\Helpers\SessionMock;
 
 beforeEach(function () {
     $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
@@ -47,7 +47,7 @@ test('item get conditions empty', function () {
 });
 
 test('item get conditions with conditions', function () {
-    $itemCondition1 = new \Pixeldigital\Cart\CartCondition([
+    $itemCondition1 = new \Wearepixel\Cart\CartCondition([
         'name' => 'SALE 5%',
         'type' => 'sale',
         'target' => 'item',
@@ -77,7 +77,7 @@ test('item associate model', function () {
 });
 
 test('it will throw an exception when a non existing model is being associated', function () {
-    $this->expectException(\Pixeldigital\Cart\Exceptions\UnknownModelException::class);
+    $this->expectException(\Wearepixel\Cart\Exceptions\UnknownModelException::class);
     $this->expectExceptionMessage('The supplied model SomeModel does not exist.');
 
     $this->cart->add(1, 'Test item', 1, 10.00)->associate('SomeModel');
