@@ -296,30 +296,17 @@ class Cart
 
     /**
      * Adds a condition to the cart
+     */
+    /**
+     * Adds a condition to the cart
      *
-     * @deprecated Use addCondition or addConditions instead
+     * @throws InvalidConditionException
      */
     public function condition(array|CartCondition $condition): self
     {
         if (is_array($condition)) {
             foreach ($condition as $c) {
-                $this->addCondition($c);
-            }
-
-            return $this;
-        }
-
-        return $this->addCondition($condition);
-    }
-
-    /**
-     * Add a condition to the cart
-     */
-    public function addCondition(CartCondition $condition): self
-    {
-        if (is_array($condition)) {
-            foreach ($condition as $c) {
-                $this->addCondition($c);
+                $this->condition($c);
             }
 
             return $this;
@@ -344,18 +331,6 @@ class Cart
         });
 
         $this->saveConditions($conditions);
-
-        return $this;
-    }
-
-    /**
-     * Add multiple conditions to the cart
-     */
-    public function addConditions(array $conditions): self
-    {
-        foreach ($conditions as $condition) {
-            $this->addCondition($condition);
-        }
 
         return $this;
     }
@@ -416,43 +391,18 @@ class Cart
     public function removeConditionsByType(string $type)
     {
         $this->getConditionsByType($type)->each(function ($condition) {
-            $this->removeCondition($condition->getName());
+            $this->removeCartCondition($condition->getName());
         });
     }
 
     /**
      * Remove a condition from the cart
-     *
-     * @deprecated Use removeCondition instead
      */
-    public function removeCartCondition(string $conditionName)
-    {
-        $this->removeCondition($conditionName);
-    }
-
-    /**
-     * Remove a condition from the cart
-     */
-    public function removeCondition(string $conditionName, $clearItemConditions = false)
+    public function removeCartCondition($conditionName)
     {
         $conditions = $this->getConditions();
 
         $conditions->pull($conditionName);
-
-        if ($clearItemConditions) {
-            // check if condition name is on any item's conditions
-            $items = $this->getContent();
-
-            foreach ($items as $item) {
-                if (isset($item['conditions'])) {
-                    foreach ($item['conditions'] as $condition) {
-                        if ($condition->getName() === $conditionName) {
-                            $this->removeItemCondition($item['id'], $conditionName);
-                        }
-                    }
-                }
-            }
-        }
 
         $this->saveConditions($conditions);
     }

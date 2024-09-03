@@ -1077,13 +1077,13 @@ describe('cart level conditions', function () {
 
         $this->cart->add($item);
 
-        $this->cart->addConditions([$shipping, $tax]);
+        $this->cart->condition([$shipping, $tax]);
 
         // let's prove first we have now two conditions in the cart
         expect($this->cart->getConditions()->count())->toEqual(2, 'Cart should have two conditions');
 
         // now let's remove a specific condition by condition name
-        $this->cart->removeCondition('Tax');
+        $this->cart->removeCartCondition('Tax');
 
         // cart should have now only 1 condition
         expect($this->cart->getConditions()->count())->toEqual(1, 'Cart should have one condition');
@@ -1256,36 +1256,6 @@ describe('item level conditions', function () {
         expect($this->cart->get(1)->getPriceSumWithConditions())->toEqual(0.00, "The item's price should be prevented from going below zero.");
     });
 
-    test('can be removed by name when calling removeCondition with clearItemConditions: true', function () {
-        $itemCondition = new CartCondition([
-            'name' => 'Item Discount',
-            'type' => 'discount',
-            'value' => '-5%',
-        ]);
-
-        $item = [
-            'id' => 1,
-            'name' => 'Backpack',
-            'price' => 168.72,
-            'quantity' => 1,
-            'attributes' => [],
-            'conditions' => [$itemCondition],
-        ];
-
-        $this->cart->add($item);
-
-        expect($this->cart->getConditions())->toHaveCount(0, 'Cart should have no conditions');
-        expect($this->cart->get(1)['conditions'])->toHaveCount(1, 'Cart item should have one condition');
-
-        $this->cart->removeCondition(
-            conditionName: 'Item Discount',
-            clearItemConditions: true
-        );
-
-        expect($this->cart->getConditions()->count())->toEqual(0, 'Cart should have no conditions now');
-        expect($this->cart->get(1)['conditions'])->toHaveCount(0, 'Cart items should have no conditions now');
-    });
-
     test('can be removed by condition name', function () {
         $heavyItemSurcharge = new CartCondition([
             'name' => 'Heavy Item Surcharge',
@@ -1315,7 +1285,7 @@ describe('item level conditions', function () {
         $this->cart->removeItemCondition(12, 'Tax');
 
         expect($this->cart->get(12)['conditions'])->toHaveCount(1, 'Item should have one condition');
-    })->only();
+    });
 
     // test('remove item condition by condition name scenario two', function () {
     //     // NOTE: in this scenario, we will add the conditions not in array format
