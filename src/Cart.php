@@ -345,17 +345,13 @@ class Cart
 
         if ($active) {
             return $conditions->filter(function (CartCondition $condition) {
-                $target = $condition->getTarget();
+                $amount = $condition->getTarget() == 'subtotal' ? $this->getSubTotal(false) : $this->getTotal();
 
-                $amount = $target == 'subtotal' ? $this->getSubTotal(false) : $this->getTotal();
-
-                return $condition->getMinimum() <= $amount;
+                return $condition->getMinimum() === null || $condition->getMinimum() <= $amount;
             })->filter(function (CartCondition $condition) {
-                $target = $condition->getTarget();
+                $amount = $condition->getTarget() == 'subtotal' ? $this->getSubTotal(false) : $this->getTotal();
 
-                $amount = $target == 'subtotal' ? $this->getSubTotal(false) : $this->getTotal();
-
-                return $condition->getMaximum() >= $amount;
+                return $condition->getMaximum() === null || $condition->getMaximum() >= $amount;
             });
         }
 
