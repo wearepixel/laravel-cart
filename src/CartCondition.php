@@ -66,6 +66,22 @@ class CartCondition
     }
 
     /**
+     * Get the minimum value of this condition
+     */
+    public function getMinimum(): int|float|null
+    {
+        return $this->args['minimum'] ?? null;
+    }
+
+    /**
+     * Get the maximum value of this condition
+     */
+    public function getMaximum(): int|float|null
+    {
+        return $this->args['maximum'] ?? null;
+    }
+
+    /**
      * get the additional attributes of a condition
      *
      * @return array

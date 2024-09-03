@@ -915,6 +915,176 @@ describe('cart level conditions', function () {
         expect($this->cart->getSubTotal())->toEqual(10.00, 'Cart should have sub total of 10.00');
         expect($this->cart->getTotal())->toEqual(10.00, 'Cart should have a total of 10.00');
     });
+
+    test('can activate a dollar discount when a minimum amount is met', function () {
+        $condition = new CartCondition([
+            'name' => 'Get $10 off when you spend $100',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '-10',
+            'minimum' => '100',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getTotal())->toEqual(90, 'Cart should have total of 90');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getTotal())->toEqual(170, 'Cart should have total of 170');
+    });
+
+    test('can activate a percentage discount when a minimum amount is met', function () {
+        $condition = new CartCondition([
+            'name' => 'Get 10% off when you spend $100',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '-10%',
+            'minimum' => '100',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getTotal())->toEqual(90, 'Cart should have total of 90');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getTotal())->toEqual(162, 'Cart should have total of 162');
+    });
+
+    test('can remove a dollar value condition when a maximum is met', function () {
+        $condition = new CartCondition([
+            'name' => 'Shipping',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '18',
+            'maximum' => '160',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getTotal())->toEqual(108, 'Cart should have total of 108');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getTotal())->toEqual(180, 'Cart should have total of 180');
+    });
+
+    test('can remove a percentage condition when a maximum is met', function () {
+        $condition = new CartCondition([
+            'name' => 'Low Cart Tax',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '10%',
+            'maximum' => '140',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getTotal())->toEqual(99, 'Cart should have total of 99');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getTotal())->toEqual(180, 'Cart should have total of 180');
+    });
+
+    test('return cart conditions only when they are active', function () {
+        $condition = new CartCondition([
+            'name' => 'Get $10 off when you spend $100',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '-10',
+            'minimum' => '100',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getConditions(active: true))->toHaveCount(0, 'Cart should have 0 conditions');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getConditions(active: true))->toHaveCount(1, 'Cart should have 1 condition');
+    });
 });
 
 describe('item level conditions', function () {
