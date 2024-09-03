@@ -792,40 +792,6 @@ describe('cart level conditions', function () {
         expect($giftCard->getCalculatedValue())->toEqual(0, 'Gift Card value should be 0');
     });
 
-    test('can be cleared', function () {
-        $siteWideDiscount = new CartCondition([
-            'name' => 'Site Wide Discount',
-            'type' => 'discount',
-            'target' => 'total',
-            'value' => '-5%',
-        ]);
-
-        $giftCard = new CartCondition([
-            'name' => 'Gift Card',
-            'type' => 'gift_card',
-            'target' => 'total',
-            'value' => '-25',
-        ]);
-
-        $item = [
-            'id' => 1,
-            'name' => 'Backpack',
-            'price' => 168.72,
-            'quantity' => 1,
-            'attributes' => [],
-        ];
-
-        $this->cart->add($item);
-
-        $this->cart->condition([$siteWideDiscount, $giftCard]);
-
-        expect($this->cart->getConditions()->count())->toEqual(2, 'Cart should have two conditions');
-
-        $this->cart->clearCartConditions();
-
-        expect($this->cart->getConditions()->count())->toEqual(0, 'Cart should have no conditions now');
-    });
-
     test('calculate the subtotal correctly when one condition makes it $0, and the other adds $10', function () {
         $this->cart->add([
             [
@@ -914,6 +880,214 @@ describe('cart level conditions', function () {
 
         expect($this->cart->getSubTotal())->toEqual(10.00, 'Cart should have sub total of 10.00');
         expect($this->cart->getTotal())->toEqual(10.00, 'Cart should have a total of 10.00');
+    });
+
+    test('can activate a dollar discount when a minimum amount is met', function () {
+        $condition = new CartCondition([
+            'name' => 'Get $10 off when you spend $100',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '-10',
+            'minimum' => '100',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getTotal())->toEqual(90, 'Cart should have total of 90');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getTotal())->toEqual(170, 'Cart should have total of 170');
+    });
+
+    test('can activate a percentage discount when a minimum amount is met', function () {
+        $condition = new CartCondition([
+            'name' => 'Get 10% off when you spend $100',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '-10%',
+            'minimum' => '100',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getTotal())->toEqual(90, 'Cart should have total of 90');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getTotal())->toEqual(162, 'Cart should have total of 162');
+    });
+
+    test('can remove a dollar value condition when a maximum is met', function () {
+        $condition = new CartCondition([
+            'name' => 'Shipping',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '18',
+            'maximum' => '160',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getTotal())->toEqual(108, 'Cart should have total of 108');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getTotal())->toEqual(180, 'Cart should have total of 180');
+    });
+
+    test('can remove a percentage condition when a maximum is met', function () {
+        $condition = new CartCondition([
+            'name' => 'Low Cart Tax',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '10%',
+            'maximum' => '140',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getTotal())->toEqual(99, 'Cart should have total of 99');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getTotal())->toEqual(180, 'Cart should have total of 180');
+    });
+
+    test('return cart conditions only when they are active', function () {
+        $condition = new CartCondition([
+            'name' => 'Get $10 off when you spend $100',
+            'type' => 'target',
+            'target' => 'total',
+            'value' => '-10',
+            'minimum' => '100',
+        ]);
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 1,
+            'attributes' => [],
+        ]);
+
+        $this->cart->condition($condition);
+
+        expect($this->cart->getConditions(active: true))->toHaveCount(0, 'Cart should have 0 conditions');
+
+        $this->cart->clear();
+
+        $this->cart->add([
+            'id' => 1,
+            'name' => 'Apple iPhone 15',
+            'price' => 90,
+            'quantity' => 2,
+            'attributes' => [],
+        ]);
+
+        expect($this->cart->getConditions(active: true))->toHaveCount(1, 'Cart should have 1 condition');
+    });
+
+    test('can be removed by condition name', function () {
+        $shipping = new CartCondition([
+            'name' => 'Shipping',
+            'type' => 'shipping',
+            'target' => 'total',
+            'value' => '12',
+        ]);
+
+        $tax = new CartCondition([
+            'name' => 'Tax',
+            'type' => 'tax',
+            'target' => 'total',
+            'value' => '2.50',
+        ]);
+
+        $item = [
+            'id' => 456,
+            'name' => 'Sample Item 1',
+            'price' => 100,
+            'quantity' => 1,
+            'attributes' => [],
+        ];
+
+        $this->cart->add($item);
+
+        $this->cart->condition([$shipping, $tax]);
+
+        // let's prove first we have now two conditions in the cart
+        expect($this->cart->getConditions()->count())->toEqual(2, 'Cart should have two conditions');
+
+        // now let's remove a specific condition by condition name
+        $this->cart->removeCartCondition('Tax');
+
+        // cart should have now only 1 condition
+        expect($this->cart->getConditions()->count())->toEqual(1, 'Cart should have one condition');
+        expect($this->cart->getConditions()->first()->getName())->toEqual('Shipping');
     });
 });
 
@@ -1082,110 +1256,36 @@ describe('item level conditions', function () {
         expect($this->cart->get(1)->getPriceSumWithConditions())->toEqual(0.00, "The item's price should be prevented from going below zero.");
     });
 
-    // test('get cart condition by condition name', function () {
-    //     $itemCondition1 = new CartCondition([
-    //         'name' => 'SALE 5%',
-    //         'type' => 'sale',
-    //         'target' => 'total',
-    //         'value' => '-5%',
-    //     ]);
-    //     $itemCondition2 = new CartCondition([
-    //         'name' => 'Item Gift Pack 25.00',
-    //         'type' => 'promo',
-    //         'target' => 'total',
-    //         'value' => '-25',
-    //     ]);
+    test('can be removed by condition name', function () {
+        $heavyItemSurcharge = new CartCondition([
+            'name' => 'Heavy Item Surcharge',
+            'type' => 'surcharge',
+            'value' => '10',
+        ]);
 
-    //     $item = [
-    //         'id' => 456,
-    //         'name' => 'Sample Item 1',
-    //         'price' => 100,
-    //         'quantity' => 1,
-    //         'attributes' => [],
-    //     ];
+        $tax = new CartCondition([
+            'name' => 'Tax',
+            'type' => 'tax',
+            'value' => '10%',
+        ]);
 
-    //     $this->cart->add($item);
+        $item = [
+            'id' => 12,
+            'name' => 'Beer (1 box)',
+            'price' => 410.60,
+            'quantity' => 1,
+            'attributes' => [],
+            'conditions' => [$heavyItemSurcharge, $tax],
+        ];
 
-    //     $this->cart->condition([$itemCondition1, $itemCondition2]);
+        $this->cart->add($item);
 
-    //     // get a condition applied on cart by condition name
-    //     $condition = $this->cart->getCondition($itemCondition1->getName());
+        expect($this->cart->get(12)['conditions'])->toHaveCount(2, 'Item should have two conditions');
 
-    //     expect('SALE 5%')->toEqual($condition->getName());
-    //     expect('total')->toEqual($condition->getTarget());
-    //     expect('sale')->toEqual($condition->getType());
-    //     expect('-5%')->toEqual($condition->getValue());
-    // });
+        $this->cart->removeItemCondition(12, 'Tax');
 
-    // test('remove cart condition by condition name', function () {
-    //     $itemCondition1 = new CartCondition([
-    //         'name' => 'SALE 5%',
-    //         'type' => 'sale',
-    //         'target' => 'total',
-    //         'value' => '-5%',
-    //     ]);
-    //     $itemCondition2 = new CartCondition([
-    //         'name' => 'Item Gift Pack 25.00',
-    //         'type' => 'promo',
-    //         'target' => 'total',
-    //         'value' => '-25',
-    //     ]);
-
-    //     $item = [
-    //         'id' => 456,
-    //         'name' => 'Sample Item 1',
-    //         'price' => 100,
-    //         'quantity' => 1,
-    //         'attributes' => [],
-    //     ];
-
-    //     $this->cart->add($item);
-
-    //     $this->cart->condition([$itemCondition1, $itemCondition2]);
-
-    //     // let's prove first we have now two conditions in the cart
-    //     expect($this->cart->getConditions()->count())->toEqual(2, 'Cart should have two conditions');
-
-    //     // now let's remove a specific condition by condition name
-    //     $this->cart->removeCartCondition('SALE 5%');
-
-    //     // cart should have now only 1 condition
-    //     expect($this->cart->getConditions()->count())->toEqual(1, 'Cart should have one condition');
-    //     expect($this->cart->getConditions()->first()->getName())->toEqual('Item Gift Pack 25.00');
-    // });
-
-    // test('remove item condition by condition name', function () {
-    //     $itemCondition1 = new CartCondition([
-    //         'name' => 'SALE 5%',
-    //         'type' => 'sale',
-    //         'value' => '-5%',
-    //     ]);
-    //     $itemCondition2 = new CartCondition([
-    //         'name' => 'Item Gift Pack 25.00',
-    //         'type' => 'promo',
-    //         'value' => '-25',
-    //     ]);
-
-    //     $item = [
-    //         'id' => 456,
-    //         'name' => 'Sample Item 1',
-    //         'price' => 100,
-    //         'quantity' => 1,
-    //         'attributes' => [],
-    //         'conditions' => [$itemCondition1, $itemCondition2],
-    //     ];
-
-    //     $this->cart->add($item);
-
-    //     // let's very first the item has 2 conditions in it
-    //     expect($this->cart->get(456)['conditions'])->toHaveCount(2, 'Item should have two conditions');
-
-    //     // now let's remove a condition on that item using the condition name
-    //     $this->cart->removeItemCondition(456, 'SALE 5%');
-
-    //     // now we should have only 1 condition left on that item
-    //     expect($this->cart->get(456)['conditions'])->toHaveCount(1, 'Item should have one condition left');
-    // });
+        expect($this->cart->get(12)['conditions'])->toHaveCount(1, 'Item should have one condition');
+    });
 
     // test('remove item condition by condition name scenario two', function () {
     //     // NOTE: in this scenario, we will add the conditions not in array format
@@ -1602,4 +1702,37 @@ describe('conditions', function () {
         expect($this->cart->getConditions()->count())->toEqual(0, 'Cart should have no conditions now');
         expect($this->cart->get(1)['conditions'])->toHaveCount(0, 'Cart items should have no conditions now');
     });
+
+    // test('remove item condition by condition name', function () {
+    //     $itemCondition1 = new CartCondition([
+    //         'name' => 'SALE 5%',
+    //         'type' => 'sale',
+    //         'value' => '-5%',
+    //     ]);
+    //     $itemCondition2 = new CartCondition([
+    //         'name' => 'Item Gift Pack 25.00',
+    //         'type' => 'promo',
+    //         'value' => '-25',
+    //     ]);
+
+    //     $item = [
+    //         'id' => 456,
+    //         'name' => 'Sample Item 1',
+    //         'price' => 100,
+    //         'quantity' => 1,
+    //         'attributes' => [],
+    //         'conditions' => [$itemCondition1, $itemCondition2],
+    //     ];
+
+    //     $this->cart->add($item);
+
+    //     // let's very first the item has 2 conditions in it
+    //     expect($this->cart->get(456)['conditions'])->toHaveCount(2, 'Item should have two conditions');
+
+    //     // now let's remove a condition on that item using the condition name
+    //     $this->cart->removeItemCondition(456, 'SALE 5%');
+
+    //     // now we should have only 1 condition left on that item
+    //     expect($this->cart->get(456)['conditions'])->toHaveCount(1, 'Item should have one condition left');
+    // });
 });

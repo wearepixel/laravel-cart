@@ -76,9 +76,9 @@ Defaults to `down`.
 'round_mode' => env('LARAVEL_CART_ROUND_MODE', 'down'),
 ```
 
-## HOW TO USE
+## Usage
 
--   [Usage](#usage)
+-   [Basic Usage](#basic-usage)
 -   [Conditions](#conditions)
 -   [Items](#items)
 -   [Associating Models](#associating-models)
@@ -288,11 +288,13 @@ Cart::clear();
 
 ## Conditions
 
-Conditions are very useful in terms for adding things like discounts, taxes, shipping costs, etc.
+Conditions are very useful for adding things like discounts, taxes, shipping, etc.
 
-Conditions can be added on the entire cart or on individual items.
+Conditions can be added on the entire cart or on individual items, and can even be applied only at certain cart values.
 
 Conditions on a cart level should always have a `target` of `subtotal` or `total`. This tells the cart which value to apply the condition to.
+
+You can provide an optional `minimum` value which should be the dollar value in which the target (subtotal or total) needs to be for the condition to be active and impact the cart.
 
 You can also provide an `order` to cart conditions which tells the cart in what order to apply the conditions. Item level conditions do not support the `order` parameter.
 
@@ -362,16 +364,57 @@ foreach($cartConditions as $condition)
     $condition->getType(); // the type
     $condition->getValue(); // the value of the condition
     $condition->getOrder(); // the order of the condition
+    $condition->getMinimum(); // the minimum dollar amount of the target, needed to activate the condition
+    $condition->getMaximum(); // the maximum dollar amount of the target, needed to keep the condition active
     $condition->getAttributes(); // the attributes of the condition, returns an empty [] if no attributes added
 }
 
 // You can also get a condition that has been applied on the cart by using its name:
-$condition = Cart::getCondition('Tax: 10%');
+$condition = Cart::getCondition('GST');
+
 $condition->getTarget(); // the target of which the condition was applied
 $condition->getName(); // the name of the condition
 $condition->getType(); // the type
 $condition->getValue(); // the value of the condition
+$condition->getMinimum(); // the minimum dollar amount of the target, needed to activate the condition
+$condition->getMaximum(); // the maximum dollar amount of the target, needed to keep the condition active
 $condition->getAttributes(); // the attributes of the condition, returns an empty [] if no attributes added
+```
+
+#### Getting active conditions on the cart: **Cart::getConditions(active: true)**
+
+You can get only active conditions by passsing `active: true` to the `getConditions()` method.
+
+This will return conditions that are actively being applied to the cart (i.e if they meet their minimum or maximum value)
+
+```php
+$tenPercentOff = new CartCondition([
+    'name' => '10% Off',
+    'type' => 'discount',
+    'target' => 'subtotal',
+    'value' => '-10%',
+    'minimum' => 120,
+    'order' => 1,
+]);
+
+Cart::getConditions(active: true);
+
+// will return "10% Off" if the subtotal of the cart is $200.
+// will return no conditions if the subtotal is $100.
+
+$shipping = new CartCondition([
+    'name' => 'Shipping',
+    'type' => 'discount',
+    'target' => 'subtotal',
+    'value' => '10',
+    'maximum' => 200,
+    'order' => 1,
+]);
+
+Cart::getConditions(active: true);
+
+// will return "Shipping" if the subtotal of the cart is less than or equal 200
+// will return no conditions if the subtotal is $210
 ```
 
 ### Calculating condition value
@@ -385,7 +428,7 @@ There are 2 ways to calculate the value of a condition:
 
 ```php
 $subTotal = Cart::getSubTotal();
-$condition = Cart::getCondition('VAT 12.5%');
+$condition = Cart::getCondition('10% GST');
 $conditionCalculatedValue = $condition->getCalculatedValue($subTotal);
 ```
 
@@ -420,6 +463,44 @@ $giftCard = new CartCondition([
 
 Cart::getCalculatedValueForCondition('Coupon Discount'); // returns 200
 Cart::getCalculatedValueForCondition('Gift Card'); // returns 0 as the coupon discount is applied first and brings the subtotal to 0
+```
+
+### Adding conditions that activate once a minimum value is met
+
+You can add a `minimum` amount required for a condition to activate.
+
+This is useful for applying discounts only after certain cart values, i.e: 10% off for any purchases over $120.
+
+```php
+$tenPercentOff = new CartCondition([
+    'name' => '10% Off',
+    'type' => 'discount',
+    'target' => 'subtotal',
+    'value' => '-10%',
+    'minimum' => 120,
+    'order' => 1,
+]);
+
+Cart::condition($tenPercentOff)
+```
+
+### Adding conditions that only activate up to a maximum value
+
+You can add a `maximum` amount required for a condition to activate.
+
+This is useful for applying discounts up until amounts, i.e shipping for anything below $200, and free shipping above.
+
+```php
+$shipping = new CartCondition([
+    'name' => 'Shipping',
+    'type' => 'discount',
+    'target' => 'subtotal',
+    'value' => '12',
+    'maximum' => 200,
+    'order' => 1,
+]);
+
+Cart::condition($shipping)
 ```
 
 ### Condition on items
@@ -483,7 +564,7 @@ Then Finally you can call **Cart::getSubTotal()** to get the Cart sub total with
 $cartSubTotal = Cart::getSubTotal();
 ```
 
-#### Add condition to existing Item on the cart: **Cart::addItemCondition($productId, $itemCondition)**
+#### Add a condition to an existing item on the cart: **Cart::addItemCondition($productId, $itemCondition)**
 
 Adding Condition to an existing Item on the cart is simple as well.
 

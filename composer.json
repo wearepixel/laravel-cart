@@ -26,9 +26,9 @@
   },
   "require-dev": {
     "mockery/mockery": "^1.4.2",
-    "laravel/pint": "dev-main",
+    "laravel/pint": "^1.17",
     "pestphp/pest": "2.35.1",
-    "larapack/dd": "dev-master"
+    "larapack/dd": "1.1"
   },
   "autoload": {
     "psr-4": {

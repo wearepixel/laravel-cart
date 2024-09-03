@@ -10,59 +10,22 @@ use Wearepixel\Cart\Exceptions\InvalidConditionException;
 
 class Cart
 {
-    /**
-     * the item storage
-     */
     protected $session;
-
-    /**
-     * the event dispatcher
-     */
     protected $events;
 
-    /**
-     * the cart session key
-     */
     protected $instanceName;
 
-    /**
-     * the session key use for the cart
-     */
     protected $sessionKey;
-
-    /**
-     * the session key use to persist cart items
-     */
     protected $sessionKeyCartItems;
-
-    /**
-     * the session key use to persist cart conditions
-     */
     protected $sessionKeyCartConditions;
 
-    /**
-     * Configuration to pass to ItemCollection
-     */
     protected $config;
 
-    /**
-     * This holds the currently added item id in cart for association
-     */
     protected $currentItemId;
 
-    /**
-     * The number of decimals to use when formatting prices
-     */
     protected $decimals;
-
-    /**
-     * The decimal point character
-     */
     protected $decPoint;
 
-    /**
-     * our object constructor
-     */
     public function __construct($session, $events, $instanceName, $session_key, $config)
     {
         $this->events = $events;
@@ -73,6 +36,7 @@ class Cart
         $this->sessionKeyCartConditions = $this->sessionKey . '_cart_conditions';
         $this->config = $config;
         $this->currentItemId = null;
+
         $this->fireEvent('created');
     }
 
@@ -109,20 +73,16 @@ class Cart
 
     /**
      * get an item on a cart by item ID
-     *
-     * @return mixed
      */
-    public function get($itemId)
+    public function get($itemId): ?ItemCollection
     {
         return $this->getContent()->get($itemId);
     }
 
     /**
-     * check if an item exists by item ID
-     *
-     * @return bool
+     * check if we have this item in the cart by item ID
      */
-    public function has($itemId)
+    public function has($itemId): bool
     {
         return $this->getContent()->has($itemId);
     }
@@ -144,10 +104,9 @@ class Cart
         array|CartCondition $conditions = [],
         ?string $associatedModel = null
     ): self {
-        // check if its an array of items
+        // check if we are adding an array of items
         if (is_array($id)) {
-            // the first argument is an array, now we will need to check if it is a multi dimensional
-            // array, if so, we will iterate through each item and call add again
+            // check if we are adding a multi dimensional array
             if (Helpers::isMultiArray($id)) {
                 foreach ($id as $item) {
                     $this->add(
@@ -175,6 +134,7 @@ class Cart
             return $this;
         }
 
+        // if we are here, we are adding a single item
         $data = [
             'id' => $id,
             'name' => $name,
@@ -191,11 +151,8 @@ class Cart
         // validate data
         $item = $this->validate($data);
 
-        // get the cart
-        $inCart = $this->get($id);
-
         // if the item is already in the cart we will just update it
-        if ($inCart) {
+        if ($this->get($id)) {
             $this->update($id, $item);
         } else {
             $this->addItem($id, $item);
@@ -339,6 +296,9 @@ class Cart
 
     /**
      * Adds a condition to the cart
+     */
+    /**
+     * Adds a condition to the cart
      *
      * @throws InvalidConditionException
      */
@@ -378,11 +338,27 @@ class Cart
     /**
      * get conditions applied on the cart
      *
-     * @return CartConditionCollection
+     * @param  bool  $active  - If true, only conditions actually applied on the cart are returned
      */
-    public function getConditions()
+    public function getConditions(bool $active = false): CartConditionCollection
     {
-        return new CartConditionCollection($this->session->get($this->sessionKeyCartConditions));
+        $conditions = new CartConditionCollection(
+            $this->session->get($this->sessionKeyCartConditions)
+        );
+
+        if ($active) {
+            return $conditions->filter(function (CartCondition $condition) {
+                $amount = $condition->getTarget() == 'subtotal' ? $this->getSubTotal(false) : $this->getTotal();
+
+                return $condition->getMinimum() === null || $condition->getMinimum() <= $amount;
+            })->filter(function (CartCondition $condition) {
+                $amount = $condition->getTarget() == 'subtotal' ? $this->getSubTotal(false) : $this->getTotal();
+
+                return $condition->getMaximum() === null || $condition->getMaximum() >= $amount;
+            });
+        }
+
+        return $conditions;
     }
 
     /**
@@ -411,12 +387,8 @@ class Cart
 
     /**
      * Remove all the condition with the $type specified
-     * Please Note that this will only remove condition added on cart bases, not those conditions added
-     * specifically on an per item bases
-     *
-     * @return $this
      */
-    public function removeConditionsByType($type)
+    public function removeConditionsByType(string $type)
     {
         $this->getConditionsByType($type)->each(function ($condition) {
             $this->removeCartCondition($condition->getName());
@@ -424,12 +396,7 @@ class Cart
     }
 
     /**
-     * removes a condition on a cart by condition name,
-     * this can only remove conditions that are added on cart bases not conditions that are added on an item/product.
-     * If you wish to remove a condition that has been added for a specific item/product, you may
-     * use the removeItemCondition(itemId, conditionName) method instead.
-     *
-     * @return void
+     * Remove a condition from the cart
      */
     public function removeCartCondition($conditionName)
     {
@@ -575,6 +542,12 @@ class Cart
             ->filter(function (CartCondition $condition) {
                 return $condition->getTarget() === 'subtotal';
             })
+            ->filter(function (CartCondition $condition) use ($subTotalSum) {
+                return $condition->getMinimum() === null || $condition->getMinimum() <= $subTotalSum;
+            })
+            ->filter(function (CartCondition $condition) use ($subTotalSum) {
+                return $condition->getMaximum() === null || $condition->getMaximum() >= $subTotalSum;
+            })
             ->sortBy(function (CartCondition $condition) {
                 return $condition->getOrder();
             });
@@ -607,6 +580,15 @@ class Cart
         $conditionsForTotal = $this->getConditions()
             ->filter(function (CartCondition $condition) {
                 return $condition->getTarget() === 'total';
+            })
+            ->filter(function (CartCondition $condition) use ($subTotal) {
+                return $condition->getMinimum() === null || $condition->getMinimum() <= $subTotal;
+            })
+            ->filter(function (CartCondition $condition) use ($subTotal) {
+                return $condition->getMaximum() === null || $condition->getMaximum() >= $subTotal;
+            })
+            ->sortBy(function (CartCondition $condition) {
+                return $condition->getOrder();
             });
 
         // if no conditions were added, just return the sub total
