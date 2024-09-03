@@ -6,7 +6,6 @@ use Wearepixel\Cart\Helpers\Helpers;
 use Wearepixel\Cart\Validators\CartItemValidator;
 use Wearepixel\Cart\Exceptions\InvalidItemException;
 use Wearepixel\Cart\Exceptions\UnknownModelException;
-use Wearepixel\Cart\Exceptions\InvalidConditionException;
 
 class Cart
 {
@@ -296,68 +295,18 @@ class Cart
 
     /**
      * Adds a condition to the cart
-     *
-     * @deprecated Use addCondition or addConditions instead
      */
     public function condition(array|CartCondition $condition): self
     {
         if (is_array($condition)) {
             foreach ($condition as $c) {
-                $this->addCondition($c);
+                $this->condition($c);
             }
 
             return $this;
         }
 
-        return $this->addCondition($condition);
-    }
-
-    /**
-     * Add a condition to the cart
-     */
-    public function addCondition(CartCondition $condition): self
-    {
-        if (is_array($condition)) {
-            foreach ($condition as $c) {
-                $this->addCondition($c);
-            }
-
-            return $this;
-        }
-
-        if (! $condition instanceof CartCondition) {
-            throw new InvalidConditionException('Argument 1 must be an instance of \'Wearepixel\Cart\CartCondition\'');
-        }
-
-        $conditions = $this->getConditions();
-
-        // Check if order has been applied
-        if ($condition->getOrder() == 0) {
-            $last = $conditions->last();
-            $condition->setOrder(! is_null($last) ? $last->getOrder() + 1 : 1);
-        }
-
-        $conditions->put($condition->getName(), $condition);
-
-        $conditions = $conditions->sortBy(function ($condition, $key) {
-            return $condition->getOrder();
-        });
-
-        $this->saveConditions($conditions);
-
-        return $this;
-    }
-
-    /**
-     * Add multiple conditions to the cart
-     */
-    public function addConditions(array $conditions): self
-    {
-        foreach ($conditions as $condition) {
-            $this->addCondition($condition);
-        }
-
-        return $this;
+        return $this->condition($condition);
     }
 
     /**
@@ -416,43 +365,18 @@ class Cart
     public function removeConditionsByType(string $type)
     {
         $this->getConditionsByType($type)->each(function ($condition) {
-            $this->removeCondition($condition->getName());
+            $this->removeCartCondition($condition->getName());
         });
     }
 
     /**
      * Remove a condition from the cart
-     *
-     * @deprecated Use removeCondition instead
      */
-    public function removeCartCondition(string $conditionName)
-    {
-        $this->removeCondition($conditionName);
-    }
-
-    /**
-     * Remove a condition from the cart
-     */
-    public function removeCondition(string $conditionName, $clearItemConditions = false)
+    public function removeCartCondition($conditionName)
     {
         $conditions = $this->getConditions();
 
         $conditions->pull($conditionName);
-
-        if ($clearItemConditions) {
-            // check if condition name is on any item's conditions
-            $items = $this->getContent();
-
-            foreach ($items as $item) {
-                if (isset($item['conditions'])) {
-                    foreach ($item['conditions'] as $condition) {
-                        if ($condition->getName() === $conditionName) {
-                            $this->removeItemCondition($item['id'], $conditionName);
-                        }
-                    }
-                }
-            }
-        }
 
         $this->saveConditions($conditions);
     }
