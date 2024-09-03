@@ -2,6 +2,7 @@
 
 namespace Wearepixel\Cart;
 
+use Wearepixel\Cart\Exceptions\InvalidConditionException;
 use Wearepixel\Cart\Helpers\Helpers;
 use Wearepixel\Cart\Validators\CartItemValidator;
 use Wearepixel\Cart\Exceptions\InvalidItemException;
@@ -296,6 +297,11 @@ class Cart
     /**
      * Adds a condition to the cart
      */
+    /**
+     * Adds a condition to the cart
+     *
+     * @throws InvalidConditionException
+     */
     public function condition(array|CartCondition $condition): self
     {
         if (is_array($condition)) {
@@ -306,7 +312,27 @@ class Cart
             return $this;
         }
 
-        return $this->condition($condition);
+        if (! $condition instanceof CartCondition) {
+            throw new InvalidConditionException('Argument 1 must be an instance of \'Wearepixel\Cart\CartCondition\'');
+        }
+
+        $conditions = $this->getConditions();
+
+        // Check if order has been applied
+        if ($condition->getOrder() == 0) {
+            $last = $conditions->last();
+            $condition->setOrder(! is_null($last) ? $last->getOrder() + 1 : 1);
+        }
+
+        $conditions->put($condition->getName(), $condition);
+
+        $conditions = $conditions->sortBy(function ($condition, $key) {
+            return $condition->getOrder();
+        });
+
+        $this->saveConditions($conditions);
+
+        return $this;
     }
 
     /**

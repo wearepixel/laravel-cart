@@ -1077,13 +1077,13 @@ describe('cart level conditions', function () {
 
         $this->cart->add($item);
 
-        $this->cart->addConditions([$shipping, $tax]);
+        $this->cart->condition([$shipping, $tax]);
 
         // let's prove first we have now two conditions in the cart
         expect($this->cart->getConditions()->count())->toEqual(2, 'Cart should have two conditions');
 
         // now let's remove a specific condition by condition name
-        $this->cart->removeCondition('Tax');
+        $this->cart->removeCartCondition('Tax');
 
         // cart should have now only 1 condition
         expect($this->cart->getConditions()->count())->toEqual(1, 'Cart should have one condition');
