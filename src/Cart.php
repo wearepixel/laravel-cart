@@ -297,13 +297,29 @@ class Cart
     /**
      * Adds a condition to the cart
      *
-     * @throws InvalidConditionException
+     * @deprecated Use addCondition or addConditions instead
      */
     public function condition(array|CartCondition $condition): self
     {
         if (is_array($condition)) {
             foreach ($condition as $c) {
-                $this->condition($c);
+                $this->addCondition($c);
+            }
+
+            return $this;
+        }
+
+        return $this->addCondition($condition);
+    }
+
+    /**
+     * Add a condition to the cart
+     */
+    public function addCondition(CartCondition $condition): self
+    {
+        if (is_array($condition)) {
+            foreach ($condition as $c) {
+                $this->addCondition($c);
             }
 
             return $this;
@@ -328,6 +344,18 @@ class Cart
         });
 
         $this->saveConditions($conditions);
+
+        return $this;
+    }
+
+    /**
+     * Add multiple conditions to the cart
+     */
+    public function addConditions(array $conditions): self
+    {
+        foreach ($conditions as $condition) {
+            $this->addCondition($condition);
+        }
 
         return $this;
     }
@@ -384,31 +412,47 @@ class Cart
 
     /**
      * Remove all the condition with the $type specified
-     * Please Note that this will only remove condition added on cart bases, not those conditions added
-     * specifically on an per item bases
-     *
-     * @return $this
      */
-    public function removeConditionsByType($type)
+    public function removeConditionsByType(string $type)
     {
         $this->getConditionsByType($type)->each(function ($condition) {
-            $this->removeCartCondition($condition->getName());
+            $this->removeCondition($condition->getName());
         });
     }
 
     /**
-     * removes a condition on a cart by condition name,
-     * this can only remove conditions that are added on cart bases not conditions that are added on an item/product.
-     * If you wish to remove a condition that has been added for a specific item/product, you may
-     * use the removeItemCondition(itemId, conditionName) method instead.
+     * Remove a condition from the cart
      *
-     * @return void
+     * @deprecated Use removeCondition instead
      */
-    public function removeCartCondition($conditionName)
+    public function removeCartCondition(string $conditionName)
+    {
+        $this->removeCondition($conditionName);
+    }
+
+    /**
+     * Remove a condition from the cart
+     */
+    public function removeCondition(string $conditionName, $clearItemConditions = false)
     {
         $conditions = $this->getConditions();
 
         $conditions->pull($conditionName);
+
+        if ($clearItemConditions) {
+            // check if condition name is on any item's conditions
+            $items = $this->getContent();
+
+            foreach ($items as $item) {
+                if (isset($item['conditions'])) {
+                    foreach ($item['conditions'] as $condition) {
+                        if ($condition->getName() === $conditionName) {
+                            $this->removeItemCondition($item['id'], $conditionName);
+                        }
+                    }
+                }
+            }
+        }
 
         $this->saveConditions($conditions);
     }
