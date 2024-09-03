@@ -2,11 +2,11 @@
 
 namespace Wearepixel\Cart;
 
-use Wearepixel\Cart\Exceptions\InvalidConditionException;
 use Wearepixel\Cart\Helpers\Helpers;
 use Wearepixel\Cart\Validators\CartItemValidator;
 use Wearepixel\Cart\Exceptions\InvalidItemException;
 use Wearepixel\Cart\Exceptions\UnknownModelException;
+use Wearepixel\Cart\Exceptions\InvalidConditionException;
 
 class Cart
 {
