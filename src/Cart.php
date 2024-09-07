@@ -736,7 +736,7 @@ class Cart
     /**
      * save the cart
      *
-     * @param    $cart  CartCollection
+     * @param  $cart  CartCollection
      */
     protected function save($cart)
     {

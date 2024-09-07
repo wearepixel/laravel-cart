@@ -10,11 +10,11 @@ beforeEach(function () {
     $events->shouldReceive('dispatch');
 
     $this->cart = new Cart(
-        new SessionMock(),
+        new SessionMock,
         $events,
         'cart',
         'SAMPLESESSIONKEY',
-        require(__DIR__ . '/../Helpers/ConfigConditionsMock.php')
+        require (__DIR__ . '/../Helpers/ConfigConditionsMock.php')
     );
 });
 
