@@ -2,4 +2,6 @@
 
 namespace Wearepixel\Cart\Validators;
 
-class CartItemValidator extends Validator {}
+class CartItemValidator extends Validator
+{
+}

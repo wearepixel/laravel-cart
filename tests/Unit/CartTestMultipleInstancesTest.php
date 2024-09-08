@@ -12,7 +12,7 @@ beforeEach(function () {
         $events,
         'shopping',
         'uniquesessionkey123',
-        require (__DIR__ . '/../Helpers/ConfigMock.php')
+        require(__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
     $this->cart2 = new Cart(
@@ -20,7 +20,7 @@ beforeEach(function () {
         $events,
         'wishlist',
         'uniquesessionkey456',
-        require (__DIR__ . '/../Helpers/ConfigMock.php')
+        require(__DIR__ . '/../Helpers/ConfigMock.php')
     );
 });
 

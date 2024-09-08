@@ -2,4 +2,6 @@
 
 namespace Wearepixel\Cart\Exceptions;
 
-class InvalidConditionException extends \Exception {}
+class InvalidConditionException extends \Exception
+{
+}

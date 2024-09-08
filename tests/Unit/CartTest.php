@@ -13,7 +13,7 @@ beforeEach(function () {
         $events,
         'shopping',
         'SAMPLESESSIONKEY',
-        require (__DIR__ . '/../Helpers/ConfigMock.php')
+        require(__DIR__ . '/../Helpers/ConfigMock.php')
     );
 });
 

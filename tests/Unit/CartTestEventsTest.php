@@ -3,7 +3,8 @@
 use Wearepixel\Cart\Cart;
 use Wearepixel\Cart\Tests\Helpers\SessionMock;
 
-beforeEach(function () {});
+beforeEach(function () {
+});
 
 afterEach(function () {
     Mockery::close();
@@ -18,7 +19,7 @@ test('event cart created', function () {
         $events,
         'cart',
         'SAMPLESESSIONKEY',
-        require (__DIR__ . '/../Helpers/ConfigMock.php')
+        require(__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
     expect(true)->toBeTrue();
@@ -35,7 +36,7 @@ test('event cart adding', function () {
         $events,
         'cart',
         'SAMPLESESSIONKEY',
-        require (__DIR__ . '/../Helpers/ConfigMock.php')
+        require(__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
     $cart->add(455, 'Sample Item', 100.99, 2, []);
@@ -54,7 +55,7 @@ test('event cart adding multiple times', function () {
         $events,
         'cart',
         'SAMPLESESSIONKEY',
-        require (__DIR__ . '/../Helpers/ConfigMock.php')
+        require(__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
     $cart->add(455, 'Sample Item 1', 100.99, 2, []);
@@ -98,7 +99,7 @@ test('event cart adding multiple times scenario two', function () {
         $events,
         'cart',
         'SAMPLESESSIONKEY',
-        require (__DIR__ . '/../Helpers/ConfigMock.php')
+        require(__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
     $cart->add($items);
@@ -143,7 +144,7 @@ test('event cart remove item', function () {
         $events,
         'cart',
         'SAMPLESESSIONKEY',
-        require (__DIR__ . '/../Helpers/ConfigMock.php')
+        require(__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
     $cart->add($items);
@@ -190,7 +191,7 @@ test('event cart clear', function () {
         $events,
         'cart',
         'SAMPLESESSIONKEY',
-        require (__DIR__ . '/../Helpers/ConfigMock.php')
+        require(__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
     $cart->add($items);
