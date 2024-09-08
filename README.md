@@ -368,8 +368,30 @@ foreach($cartConditions as $condition)
     $condition->getMaximum(); // the maximum dollar amount of the target, needed to keep the condition active
     $condition->getAttributes(); // the attributes of the condition, returns an empty [] if no attributes added
 }
+```
 
-// You can also get a condition that has been applied on the cart by using its name:
+#### Getting conditions on the cart as an array: **Cart::getConditions(array: true)**
+
+You can get all cart conditions in array format by passing "array: true". This is useful if you want to store the carts conditions on a Livewire component since by default we have collections inside collections for conditions which Livewire does not support.
+
+```php
+$cartConditions = Cart::getConditions(true);
+$cartConditions = Cart::getConditions(active: true);
+
+foreach ($cartConditions as $condition) {
+    $condition['name']; // the name of the condition
+    $condition['type']; // the type
+    $condition['value']; // the value of the condition
+    $condition['order']; // the order of the condition
+    $condition['minimum']; // the minimum dollar amount of the target, needed to activate the condition
+    $condition['maximum']; // the maximum dollar amount of the target, needed to keep the condition active
+    $condition['attributes']; // the attributes of the condition, returns an empty [] if no attributes added
+}
+```
+
+#### Getting conditions by name: **Cart::getCondition($conditionName)**
+
+```php
 $condition = Cart::getCondition('GST');
 
 $condition->getTarget(); // the target of which the condition was applied

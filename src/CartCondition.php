@@ -8,15 +8,12 @@ use Wearepixel\Cart\Exceptions\InvalidConditionException;
 
 class CartCondition
 {
-    /**
-     * @var array
-     */
     private $args;
 
     /**
      * the parsed raw value of the condition
      */
-    public $parsedRawValue = 0;
+    private $parsedRawValue = 0;
 
     /**
      * @param  array  $args  (name, type, target, value)
@@ -268,5 +265,10 @@ class CartCondition
         if ($validator->fails()) {
             throw new InvalidConditionException($validator->messages()->first());
         }
+    }
+
+    public function toArray(): array
+    {
+        return $this->args;
     }
 }
