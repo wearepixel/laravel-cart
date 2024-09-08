@@ -2,6 +2,4 @@
 
 namespace Wearepixel\Cart\Exceptions;
 
-class UnknownModelException extends \Exception
-{
-}
+class UnknownModelException extends \Exception {}
