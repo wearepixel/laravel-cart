@@ -340,7 +340,7 @@ class Cart
      *
      * @param  bool  $active  - If true, only conditions actually applied on the cart are returned
      */
-    public function getConditions(bool $active = false): CartConditionCollection
+    public function getConditions(bool $array = false, bool $active = false): CartConditionCollection|array
     {
         $conditions = new CartConditionCollection(
             $this->session->get($this->sessionKeyCartConditions)
@@ -358,7 +358,9 @@ class Cart
             });
         }
 
-        return $conditions;
+        return $array ? $conditions->map(function (CartCondition $condition) {
+            return $condition->toArray();
+        })->toArray() : $conditions;
     }
 
     /**
@@ -403,6 +405,9 @@ class Cart
         $conditions = $this->getConditions();
 
         $conditions->pull($conditionName);
+
+        // reset indexes
+        $conditions = $conditions->values();
 
         $this->saveConditions($conditions);
     }
@@ -455,6 +460,9 @@ class Cart
                 }
             }
         }
+
+        // reset indexes
+        $item['conditions'] = array_values($item['conditions']);
 
         $this->update($itemId, [
             'conditions' => $item['conditions'],
