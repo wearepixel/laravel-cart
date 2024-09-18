@@ -406,9 +406,6 @@ class Cart
 
         $conditions->pull($conditionName);
 
-        // reset indexes
-        $conditions = $conditions->values();
-
         $this->saveConditions($conditions);
     }
 
@@ -736,7 +733,7 @@ class Cart
     /**
      * save the cart
      *
-     * @param  $cart  CartCollection
+     * @param    $cart  CartCollection
      */
     protected function save($cart)
     {

@@ -10,11 +10,11 @@ beforeEach(function () {
     $events->shouldReceive('dispatch');
 
     $this->cart = new Cart(
-        new SessionMock,
+        new SessionMock(),
         $events,
         'cart',
         'SAMPLESESSIONKEY',
-        require (__DIR__ . '/../Helpers/ConfigConditionsMock.php')
+        require(__DIR__ . '/../Helpers/ConfigConditionsMock.php')
     );
 });
 
@@ -119,7 +119,7 @@ describe('conditions', function () {
 
         // now we should have only 1 condition left on that item
         expect($this->cart->getConditions())->toHaveCount(1, 'Item should have one condition left');
-        expect($this->cart->getConditions()[0]->getName())->toEqual('Mother\'s Day Gift Pack');
+        expect($this->cart->getConditions()->first()->getName())->toEqual('Mother\'s Day Gift Pack');
     });
 });
 
