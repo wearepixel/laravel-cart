@@ -1310,7 +1310,7 @@ describe('item level conditions', function () {
 
         // now we should have only 1 condition left on that item
         expect($this->cart->get(1)['conditions'])->toHaveCount(1, 'Item should have one condition left');
-        expect($this->cart->get(1)['conditions'][0]->getName())->toEqual('Mother\'s Day Gift Pack');
+        expect($this->cart->get(1)['conditions'][1]->getName())->toEqual('Mother\'s Day Gift Pack');
     });
 
     test('can add item with multiple negative item conditions', function () {

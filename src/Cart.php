@@ -458,9 +458,6 @@ class Cart
             }
         }
 
-        // reset indexes
-        $item['conditions'] = array_values($item['conditions']);
-
         $this->update($itemId, [
             'conditions' => $item['conditions'],
         ]);
@@ -601,10 +598,14 @@ class Cart
             return Helpers::formatValue($subTotal, $this->config['format_numbers'], $this->config);
         }
 
-        $conditionsForTotal->each(function (CartCondition $condition) use ($subTotal, &$total) {
-            $toBeCalculated = $total > 0 ? $total : $subTotal;
+        $index = 0;
+
+        $conditionsForTotal->each(function (CartCondition $condition) use ($subTotal, &$total, &$index) {
+            $toBeCalculated = ($index > 0) ? $total : $subTotal;
 
             $total = $condition->applyCondition($toBeCalculated);
+
+            $index++;
         });
 
         return Helpers::formatValue($total, $this->config['format_numbers'], $this->config);
