@@ -110,21 +110,17 @@ Defaults to `down`.
 
 ### Basic Usage
 
-The cart has a default sessionKey that holds the cart data and stores it in the session. 
+The cart has a default sessionKey that holds the cart data and stores it in the session, so you can have multiple carts for multiple users.
 
-This
-also serves as a cart unique identifier which you can use to bind a cart to a specific user if you want to.
+This also serves as a cart unique identifier which you can use to bind a cart to a specific user if you want to.
 
-Make sure to call `\Cart::session($sessionKey)` before calling any other cart methods.
+Make sure to call `\Cart::setSessionKey($sessionKey)` before calling any other cart methods.
 
 Usually this is not required.
 
 ```php
 // Binds the cart to a unique id (user id, session id, etc.)
-\Cart::session(User::first()->id);
-
-// If you don't want to bind the cart on a project level, you can add it to each call
-\Cart::session(User::first()->id)->add(1, 'Product 1', 19.99, 2, ['size' => 'large']);
+\Cart::setSessionKey(User::first()->id);
 ```
 
 #### Adding to the cart: **Cart::add()**

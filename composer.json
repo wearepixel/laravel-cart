@@ -1,6 +1,6 @@
 {
   "name": "joelwmale/laravel-cart",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "A cart implementation for Laravel",
   "keywords": [
     "laravel",

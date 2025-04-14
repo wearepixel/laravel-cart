@@ -47,6 +47,34 @@ class CartSession
         ]);
     }
 
+    public function getSessionKey()
+    {
+        return $this->sessionKey;
+    }
+
+    public function setSessionKey(string $sessionKey)
+    {
+        // set the session key and then update the session
+        $this->sessionKey = $sessionKey;
+
+        if ($this->driver == 'session') {
+            $session = $this->session->get($this->itemsKey);
+            $sessionKey = $this->session->get($this->conditionsKey);
+
+            $this->session->forget($this->itemsKey);
+            $this->session->forget($this->conditionsKey);
+
+            $this->itemsKey = $this->sessionKey . '_cart_items';
+            $this->conditionsKey = $this->sessionKey . '_cart_conditions';
+
+            $this->session->put($this->itemsKey, $session);
+            $this->session->put($this->conditionsKey, $sessionKey);
+        } elseif ($this->driver == 'database') {
+            $this->session[$this->sessionId] = $sessionKey;
+            $this->session->save();
+        }
+    }
+
     public function has($key)
     {
         return $this->session->has($key) ?? $this->session;

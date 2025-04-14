@@ -689,3 +689,15 @@ test('cart can add items with multidimensional array with associated model', fun
     expect($this->cart->getTotalQuantity())->toBeInt('Return type should be INT');
     expect($this->cart->getTotalQuantity())->toEqual(12, 'Cart\'s quantity should be 4.');
 });
+
+test('can add to cart and then update the session key', function () {
+    $this->cart->add(1, 'Sample Item', 100.99, 2, []);
+
+    expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should be 1');
+    expect($this->cart->getContent()->first()['id'])->toEqual(1, 'Item added has ID of 1 so first content ID should be 1');
+
+    $this->cart->setSessionKey('new_session_key');
+
+    expect($this->cart->getSessionKey())->toEqual('new_session_key', 'Session key should be updated to new_session_key');
+    expect($this->cart->getContent()->count())->toEqual(1, 'Cart content should still be 1');
+});

@@ -56,6 +56,16 @@ class Cart
         }
     }
 
+    public function getSessionKey(): string
+    {
+        return $this->session->getSessionKey();
+    }
+
+    public function setSessionKey(string $sessionKey): void
+    {
+        $this->session->setSessionKey($sessionKey);
+    }
+
     /**
      * get instance name of the cart
      *
