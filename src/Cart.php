@@ -165,7 +165,29 @@ class Cart
 
         $this->currentItemId = $id;
 
+        // clean up any incomplete items
+        $this->removeInvalidItems();
+
         return $this;
+    }
+
+    /**
+     * Remove any incomplete items
+     */
+    public function removeInvalidItems(): bool
+    {
+        $carts = $this->getContent();
+
+        foreach ($carts as $index => $cart) {
+
+            if (! (isset($cart['id'], $cart['name'], $cart['quantity']))) {
+
+                // remove item
+                $this->remove($index);
+            }
+        }
+
+        return true;
     }
 
     /**
