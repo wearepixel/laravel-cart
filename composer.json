@@ -38,10 +38,10 @@
     }
   },
   "autoload-dev": {
-        "psr-4": {
-            "Tests\\": "tests/"
-        }
-    },
+    "psr-4": {
+      "Tests\\": "tests/"
+    }
+  },
   "minimum-stability": "dev",
   "extra": {
     "laravel": {
