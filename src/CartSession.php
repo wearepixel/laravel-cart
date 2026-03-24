@@ -1,6 +1,6 @@
 <?php
 
-namespace Joelwmale\Cart;
+namespace Wearepixel\Cart;
 
 class CartSession
 {
@@ -43,7 +43,7 @@ class CartSession
     {
         return in_array(is_object($session) ? get_class($session) : $session, [
             'Illuminate\Session\SessionManager',
-            'Joelwmale\Cart\Tests\Helpers\SessionMock',
+            'Wearepixel\Cart\Tests\Helpers\SessionMock',
         ]);
     }
 

@@ -1,7 +1,7 @@
 <?php
 
-use Joelwmale\Cart\Cart;
-use Joelwmale\Cart\Tests\Helpers\SessionMock;
+use Wearepixel\Cart\Cart;
+use Wearepixel\Cart\Tests\Helpers\SessionMock;
 
 beforeEach(function () {});
 
@@ -25,7 +25,7 @@ test('event cart Created', function () {
 });
 
 test('event cart adding', function () {
-    $events = Mockery::mock('Illuminate\Events\Dispatcher');
+    $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
     $events->shouldReceive('dispatch')->once()->with('LaravelCart.Created', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->once()->with('LaravelCart.Adding', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->once()->with('LaravelCart.Added', Mockery::type('array'), true);
@@ -44,7 +44,7 @@ test('event cart adding', function () {
 });
 
 test('event cart adding multiple times', function () {
-    $events = Mockery::mock('Illuminate\Events\Dispatcher');
+    $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
     $events->shouldReceive('dispatch')->once()->with('LaravelCart.Created', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->times(2)->with('LaravelCart.Adding', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->times(2)->with('LaravelCart.Added', Mockery::type('array'), true);
@@ -64,7 +64,7 @@ test('event cart adding multiple times', function () {
 });
 
 test('event cart adding multiple times scenario two', function () {
-    $events = Mockery::mock('Illuminate\Events\Dispatcher');
+    $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
     $events->shouldReceive('dispatch')->once()->with('LaravelCart.Created', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->times(3)->with('LaravelCart.Adding', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->times(3)->with('LaravelCart.Added', Mockery::type('array'), true);
@@ -107,7 +107,7 @@ test('event cart adding multiple times scenario two', function () {
 });
 
 test('event cart remove item', function () {
-    $events = Mockery::mock('Illuminate\Events\Dispatcher');
+    $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
     $events->shouldReceive('dispatch')->once()->with('LaravelCart.Created', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->times(3)->with('LaravelCart.Adding', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->times(3)->with('LaravelCart.Added', Mockery::type('array'), true);
@@ -154,7 +154,7 @@ test('event cart remove item', function () {
 });
 
 test('event cart clear', function () {
-    $events = Mockery::mock('Illuminate\Events\Dispatcher');
+    $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
     $events->shouldReceive('dispatch')->once()->with('LaravelCart.Created', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->times(3)->with('LaravelCart.Adding', Mockery::type('array'), true);
     $events->shouldReceive('dispatch')->times(3)->with('LaravelCart.Added', Mockery::type('array'), true);

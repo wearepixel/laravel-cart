@@ -1,6 +1,6 @@
 <?php
 
-namespace Joelwmale\Cart\Tests\Helpers;
+namespace Wearepixel\Cart\Tests\Helpers;
 
 class SessionMock
 {

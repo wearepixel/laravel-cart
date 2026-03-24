@@ -1,6 +1,6 @@
 <?php
 
-namespace Joelwmale\Cart;
+namespace Wearepixel\Cart;
 
 use Illuminate\Support\Collection;
 

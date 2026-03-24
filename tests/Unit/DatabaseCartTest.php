@@ -1,8 +1,8 @@
 <?php
 
-use Joelwmale\Cart\Cart;
-use Joelwmale\Cart\CartCondition;
-use Joelwmale\Cart\Tests\Helpers\MockCartModel;
+use Wearepixel\Cart\Cart;
+use Wearepixel\Cart\CartCondition;
+use Wearepixel\Cart\Tests\Helpers\MockCartModel;
 
 beforeEach(function () {
     $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');

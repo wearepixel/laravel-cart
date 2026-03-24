@@ -8,7 +8,7 @@ return [
     'storage' => [
         'session',
         'database' => [
-            'model' => \Joelwmale\Cart\Tests\Helpers\MockCartModel::class,
+            'model' => \Wearepixel\Cart\Tests\Helpers\MockCartModel::class,
             'id' => 'session_id',
             'items' => 'items',
             'conditions' => 'conditions',

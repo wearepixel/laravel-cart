@@ -1,17 +1,17 @@
 <a name="top"></a>
 [![Laravel Cart](./docs/laravel-cart.png)](https://joelmale.com)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/joelwmale/laravel-cart.svg?style=flat-square)](https://packagist.org/packages/joelwmale/laravel-cart)
-[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/joelwmale/laravel-cart/tests.yml?branch=master&label=Tests)](https://github.com/joelwmale/laravel-cart/actions?query=workflow%3ATests+branch%3Amaster)
-[![Total Downloads](https://img.shields.io/packagist/dt/joelwmale/laravel-cart.svg?style=flat-square)](https://packagist.org/packages/joelwmale/laravel-cart)
-[![GitHub last commit](https://img.shields.io/github/last-commit/joelwmale/laravel-cart)](#)
-[![License](https://poser.pugx.org/joelwmale/laravel-cart/license.svg)](https://packagist.org/packages/joelwmale/laravel-cart)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/wearepixel/laravel-cart.svg?style=flat-square)](https://packagist.org/packages/wearepixel/laravel-cart)
+[![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/wearepixel/laravel-cart/tests.yml?branch=master&label=Tests)](https://github.com/wearepixel/laravel-cart/actions?query=workflow%3ATests+branch%3Amaster)
+[![Total Downloads](https://img.shields.io/packagist/dt/wearepixel/laravel-cart.svg?style=flat-square)](https://packagist.org/packages/wearepixel/laravel-cart)
+[![GitHub last commit](https://img.shields.io/github/last-commit/wearepixel/laravel-cart)](#)
+[![License](https://poser.pugx.org/wearepixel/laravel-cart/license.svg)](https://packagist.org/packages/wearepixel/laravel-cart)
 [![Free](https://img.shields.io/badge/free_for_non_commercial_use-brightgreen)](#-license)
 
 A Cart Implementation for Laravel.
 
 Supported Laravel Versions: 10, 11, and 12.
 
-For Laravel 9.0 and below, please use version [1.0](https://github.com/joelwmale/laravel-cart/releases/tag/1.0.12)
+For Laravel 9.0 and below, please use version [1.0](https://github.com/wearepixel/laravel-cart/releases/tag/1.0.12)
 
 ## Table of Contents
 - [Getting Started](#-getting-started)
@@ -31,7 +31,7 @@ For Laravel 9.0 and below, please use version [1.0](https://github.com/joelwmale
 
 Install the package through [Composer](http://getcomposer.org/).
 
-`composer require joelwmale/laravel-cart`
+`composer require wearepixel/laravel-cart`
 
 ## 🧑‍🍳 Demo
 
@@ -71,7 +71,7 @@ $total = Cart::getTotal();
 You can publish the configuration file to customize various options.
 
 ```php
-php artisan vendor:publish --provider="Joelwmale\Cart\CartServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Wearepixel\Cart\CartServiceProvider" --tag="config"
 ```
 
 #### Formatting Numbers
@@ -328,7 +328,7 @@ You can also provide an `order` to cart conditions which tells the cart in what 
 
 ```php
 // Add a single condition to the cart
-$condition = new \Joelwmale\Cart\CartCondition([
+$condition = new \Wearepixel\Cart\CartCondition([
     'name' => 'Tax: 10%',
     'type' => 'tax',
     'target' => 'subtotal', // this condition will be applied to cart's subtotal when getSubTotal() is called.
@@ -341,7 +341,7 @@ $condition = new \Joelwmale\Cart\CartCondition([
 Cart::condition($condition);
 
 // Add multiple conditions
-$tax = new \Joelwmale\Cart\CartCondition([
+$tax = new \Wearepixel\Cart\CartCondition([
     'name' => 'Tax: 10%',
     'type' => 'tax',
     'target' => 'subtotal', // this condition will be applied to cart's subtotal when getSubTotal() is called.
@@ -349,7 +349,7 @@ $tax = new \Joelwmale\Cart\CartCondition([
     'order' => 2
 ]);
 
-$shipping = new \Joelwmale\Cart\CartCondition([
+$shipping = new \Wearepixel\Cart\CartCondition([
     'name' => 'Shipping: $15',
     'type' => 'shipping',
     'target' => 'subtotal', // this condition will be applied to cart's subtotal when getSubTotal() is called.
@@ -364,7 +364,7 @@ Cart::condition($shipping);
 Cart::condition([$tax, $shipping]);
 
 // add condition to only apply on totals, not in subtotal
-$shipping = new \Joelwmale\Cart\CartCondition([
+$shipping = new \Wearepixel\Cart\CartCondition([
     'name' => 'Express Shipping $15',
     'type' => 'shipping',
     'target' => 'total',
@@ -556,7 +556,7 @@ Item conditions are useful if you have discounts to be applied specifically on a
 ```php
 
 // lets create first our condition instance
-$saleCondition = new \Joelwmale\Cart\CartCondition([
+$saleCondition = new \Wearepixel\Cart\CartCondition([
     'name' => '50% Off',
     'type' => 'tax',
     'value' => '-50%',
@@ -576,7 +576,7 @@ $product = [
 Cart::add($product);
 
 // You can of course also do multiple conditions on an item
-$saleCondition = new \Joelwmale\Cart\CartCondition([
+$saleCondition = new \Wearepixel\Cart\CartCondition([
     'name' => 'SALE 5%',
     'type' => 'sale',
     'value' => '-5%',
