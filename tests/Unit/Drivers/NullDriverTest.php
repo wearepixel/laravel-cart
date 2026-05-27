@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Wearepixel\Cart\Drivers\NullDriver;
 
 describe('NullDriver', function () {
@@ -11,7 +13,7 @@ describe('NullDriver', function () {
         expect($this->driver->getSessionKey())->toBe('test-session');
     });
 
-    test('returns null as driver name', function () {
+    test('returns \'null\' as driver name', function () {
         expect($this->driver->getDriverName())->toBe('null');
     });
 
