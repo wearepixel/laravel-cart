@@ -1,17 +1,33 @@
 version: 2
-
 updates:
   - package-ecosystem: "github-actions"
     directory: "/"
-    target-branch: "master"
     schedule:
       interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 10
+    groups:
+      actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "chore"
+      include: "scope"
     labels:
-      - "deps"
+      - "dependencies"
+
   - package-ecosystem: "composer"
     directory: "/"
-    target-branch: "master"
     schedule:
       interval: "weekly"
+      day: "tuesday"
+    open-pull-requests-limit: 10
+    groups:
+      php-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+    commit-message:
+      prefix: "chore"
+      include: "scope"
     labels:
-      - "deps"
+      - "dependencies"
