@@ -464,7 +464,24 @@ class Cart
     public function getContent(): CartCollection
     {
         return (new CartCollection($this->driver->getItems()))
-            ->transform(fn($item) => $item instanceof ItemCollection ? $item : new ItemCollection($item, $this->config))
+            ->transform(function ($item) {
+                if ($item instanceof ItemCollection) {
+                    return $item;
+                }
+
+                if (is_array($item) && isset($item['attributes']) && is_array($item['attributes'])) {
+                    $item['attributes'] = new ItemAttributeCollection($item['attributes']);
+                }
+
+                if (is_array($item) && isset($item['conditions']) && is_array($item['conditions'])) {
+                    $item['conditions'] = array_map(
+                        fn($c) => is_array($c) ? new CartCondition($c) : $c,
+                        $item['conditions']
+                    );
+                }
+
+                return new ItemCollection($item, $this->config);
+            })
             ->reject(fn($item) => ! ($item instanceof ItemCollection));
     }
 
@@ -549,7 +566,6 @@ class Cart
             } elseif (is_array($conditions) || $conditions instanceof \Traversable) {
                 $data['conditions'] = collect($conditions)
                     ->map(fn($c) => $c instanceof CartCondition ? $c->toArray() : $c)
-                    ->values()
                     ->toArray();
             } else {
                 $data['conditions'] = [];
@@ -565,7 +581,7 @@ class Cart
 
     private function serializeConditions(CartConditionCollection $conditions): array
     {
-        return $conditions->map(fn(CartCondition $c) => $c->toArray())->toArray();
+        return $conditions->all();
     }
 
     protected function itemHasConditions(ItemCollection $item): bool
@@ -583,13 +599,13 @@ class Cart
 
     protected function updateQuantityRelative(ItemCollection $item, string $key, mixed $value): ItemCollection
     {
-        if (preg_match('/\-/', $value) === 1) {
-            $value = (float) str_replace('-', '', $value);
+        if (preg_match('/\-/', (string) $value) === 1) {
+            $value = (float) str_replace('-', '', (string) $value);
             if (($item[$key] - $value) > 0) {
                 $item[$key] -= $value;
             }
-        } elseif (preg_match('/\+/', $value) === 1) {
-            $item[$key] += (float) str_replace('+', '', $value);
+        } elseif (preg_match('/\+/', (string) $value) === 1) {
+            $item[$key] += (float) str_replace('+', '', (string) $value);
         } else {
             $item[$key] += (float) $value;
         }
