@@ -1,22 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Wearepixel\Cart;
 
 use Illuminate\Support\ServiceProvider;
 
 class CartServiceProvider extends ServiceProvider
 {
-    /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
     protected $defer = false;
 
-    /**
-     * Boot the service provider.
-     */
-    public function boot()
+    public function boot(): void
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
@@ -25,39 +19,22 @@ class CartServiceProvider extends ServiceProvider
         }
     }
 
-    /**
-     * Register the service provider.
-     *
-     * @return void
-     */
-    public function register()
+    public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/config.php', 'cart');
+
+        $this->app->singleton('cart.manager', fn($app) => new CartManager($app));
 
         $this->app->singleton('cart', function ($app) {
             $config = config('cart');
             $events = $app['events'];
+            $driver = $app['cart.manager']->driver();
 
-            $storage = $config['driver'] === 'database'
-                ? new $config['storage']['database']['model']
-                : $app['session'];
-
-            return new Cart(
-                $storage,
-                $events,
-                'cart',
-                session()->getId(),
-                $config
-            );
+            return new Cart($driver, $events, 'cart', $config);
         });
     }
 
-    /**
-     * Get the services provided by the provider.
-     *
-     * @return array
-     */
-    public function provides()
+    public function provides(): array
     {
         return [];
     }
