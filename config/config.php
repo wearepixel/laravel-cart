@@ -37,7 +37,7 @@ return [
     'drivers' => [
         'redis' => [
             'connection' => 'default',
-            'ttl'        => 60 * 24 * 7, // 7 days in minutes
+            'ttl'        => 604800, // 7 days in seconds
         ],
 
         'multi' => ['session', 'database'],
