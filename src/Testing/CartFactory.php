@@ -14,7 +14,8 @@ class CartFactory
 
     public function withItems(int $count): static
     {
-        for ($i = 1; $i <= $count; $i++) {
+        $start = $this->cart->getContent()->count() + 1;
+        for ($i = $start; $i < $start + $count; $i++) {
             $this->cart->add($i, "Test Item {$i}", 10.00, 1);
         }
 

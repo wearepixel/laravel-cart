@@ -57,4 +57,18 @@ describe('CartFactory', function () {
 
         expect(array_unique($ids))->toHaveCount(3);
     });
+
+    test('withCoupon adds a coupon condition to the cart', function () {
+        $coupon = new class extends \Wearepixel\Cart\Coupons\Coupon {
+            protected string $code = 'SAVE10';
+            protected string $value = '-10%';
+            protected string $target = 'subtotal';
+
+            public function isValid(): bool { return true; }
+        };
+
+        $this->factory->withCoupon($coupon);
+
+        expect($this->cart->getCondition('SAVE10'))->not->toBeNull();
+    });
 });
