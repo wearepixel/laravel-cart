@@ -5,6 +5,12 @@ declare(strict_types=1);
 namespace Wearepixel\Cart;
 
 use Illuminate\Support\ServiceProvider;
+use Wearepixel\Cart\Commands\DebugCommand;
+use Wearepixel\Cart\Commands\InstallCommand;
+use Wearepixel\Cart\Commands\MakeCouponCommand;
+use Wearepixel\Cart\Commands\MakeDriverCommand;
+use Wearepixel\Cart\Commands\MakeShippingCommand;
+use Wearepixel\Cart\Commands\MakeTaxCommand;
 
 class CartServiceProvider extends ServiceProvider
 {
@@ -15,7 +21,16 @@ class CartServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 __DIR__ . '/../config/config.php' => config_path('cart.php'),
-            ], 'config');
+            ], 'cart-config');
+
+            $this->commands([
+                InstallCommand::class,
+                MakeCouponCommand::class,
+                MakeTaxCommand::class,
+                MakeShippingCommand::class,
+                MakeDriverCommand::class,
+                DebugCommand::class,
+            ]);
         }
     }
 
