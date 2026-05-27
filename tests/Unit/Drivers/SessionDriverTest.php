@@ -71,6 +71,16 @@ describe('SessionDriver', function () {
         expect($this->driver->getSessionModel())->toBeNull();
     });
 
+    test('accepts explicit session and key, using them directly', function () {
+        $session = new SessionMock;
+        $driver = new SessionDriver($session, 'explicit-key');
+
+        $driver->putItems([['id' => 1]]);
+
+        expect($driver->getSessionKey())->toBe('explicit-key');
+        expect($driver->getItems())->toBe([['id' => 1]]);
+    });
+
     test('setSessionKey on empty cart does not write null to session', function () {
         $this->driver->setSessionKey('new-key');
 

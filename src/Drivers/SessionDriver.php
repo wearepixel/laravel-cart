@@ -13,11 +13,13 @@ class SessionDriver implements CartDriver
     private string $conditionsKey;
 
     public function __construct(
-        private mixed $session,
-        private string $sessionKey,
+        private mixed $session = null,
+        private ?string $sessionKey = null,
     ) {
-        $this->itemsKey = $sessionKey . '_cart_items';
-        $this->conditionsKey = $sessionKey . '_cart_conditions';
+        $this->session ??= app('session');
+        $this->sessionKey ??= $this->session->getId();
+        $this->itemsKey = $this->sessionKey . '_cart_items';
+        $this->conditionsKey = $this->sessionKey . '_cart_conditions';
     }
 
     public function getSessionKey(): string
