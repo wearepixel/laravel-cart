@@ -68,4 +68,12 @@ describe('DatabaseDriver', function () {
     test('getSessionModel returns the Eloquent model', function () {
         expect($this->driver->getSessionModel())->toBeInstanceOf(MockCartModel::class);
     });
+
+    test('setSessionKey updates the session key on the model', function () {
+        $this->driver->putItems([['id' => 1]]);
+        $this->driver->setSessionKey('new-session');
+
+        expect($this->driver->getSessionKey())->toBe('new-session');
+        expect($this->driver->getItems())->toBe([['id' => 1]]);
+    });
 });
