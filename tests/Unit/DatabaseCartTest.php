@@ -112,6 +112,38 @@ describe('database cart', function () {
         expect($this->cart->getTotal())->toEqual(18.45, 'Cart should have total of 18.45');
     });
 
+    test('cart-level conditions survive database round-trip', function () {
+        $this->cart->condition(new CartCondition([
+            'name'   => 'GST',
+            'type'   => 'tax',
+            'value'  => '10%',
+            'target' => 'subtotal',
+        ]));
+
+        // Create a fresh cart instance pointing at the same DB row
+        $events2 = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
+        $events2->shouldReceive('dispatch');
+
+        $cart2 = new \Wearepixel\Cart\Cart(
+            new \Wearepixel\Cart\Drivers\DatabaseDriver(
+                \Wearepixel\Cart\Tests\Helpers\MockCartModel::class,
+                'session_id',
+                'items',
+                'conditions',
+                'SAMPLESESSIONKEY',
+            ),
+            $events2,
+            'cart',
+            require (__DIR__ . '/../Helpers/ConfigDatabaseMock.php')
+        );
+
+        $condition = $cart2->getCondition('GST');
+
+        expect($condition)->not->toBeNull();
+        expect($condition->getName())->toBe('GST');
+        expect($condition->getValue())->toBe('10%');
+    });
+
     test('can clear a simple cart', function () {
         $this->cart->add(1, 'Sample Item', 100.99, 2, []);
 

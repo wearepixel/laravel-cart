@@ -10,13 +10,14 @@ use Wearepixel\Cart\Validators\CartItemValidator;
 use Wearepixel\Cart\Exceptions\InvalidItemException;
 use Wearepixel\Cart\Exceptions\UnknownModelException;
 use Wearepixel\Cart\Exceptions\InvalidConditionException;
+use Illuminate\Contracts\Events\Dispatcher;
 use Wearepixel\Cart\Drivers\Contracts\CartDriver;
 
 class Cart
 {
     protected CartDriver $driver;
 
-    protected $events;
+    protected Dispatcher $events;
 
     protected string $instanceName;
 
@@ -24,7 +25,7 @@ class Cart
 
     protected mixed $currentItemId;
 
-    public function __construct(CartDriver $driver, $events, string $instanceName, array $config)
+    public function __construct(CartDriver $driver, Dispatcher $events, string $instanceName, array $config)
     {
         $this->driver = $driver;
         $this->events = $events;
@@ -581,7 +582,7 @@ class Cart
 
     private function serializeConditions(CartConditionCollection $conditions): array
     {
-        return $conditions->all();
+        return $conditions->map(fn(CartCondition $c) => $c->toArray())->all();
     }
 
     protected function itemHasConditions(ItemCollection $item): bool
