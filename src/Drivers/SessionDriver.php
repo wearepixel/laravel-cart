@@ -37,8 +37,13 @@ class SessionDriver implements CartDriver
         $this->itemsKey = $sessionKey . '_cart_items';
         $this->conditionsKey = $sessionKey . '_cart_conditions';
 
-        $this->session->put($this->itemsKey, $items);
-        $this->session->put($this->conditionsKey, $conditions);
+        if ($items !== null) {
+            $this->session->put($this->itemsKey, $items);
+        }
+
+        if ($conditions !== null) {
+            $this->session->put($this->conditionsKey, $conditions);
+        }
     }
 
     public function getDriverName(): string

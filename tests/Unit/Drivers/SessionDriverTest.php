@@ -70,4 +70,15 @@ describe('SessionDriver', function () {
     test('getSessionModel returns null', function () {
         expect($this->driver->getSessionModel())->toBeNull();
     });
+
+    test('setSessionKey on empty cart does not write null to session', function () {
+        $this->driver->setSessionKey('new-key');
+
+        // After key change, empty cart should still return empty arrays, not null
+        expect($this->driver->getItems())->toBe([]);
+        expect($this->driver->getConditions())->toBe([]);
+        // And the session should not have null values written
+        expect($this->session->get('new-key_cart_items'))->toBeNull();
+        expect($this->session->get('new-key_cart_conditions'))->toBeNull();
+    });
 });
