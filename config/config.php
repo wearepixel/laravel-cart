@@ -16,16 +16,30 @@ return [
      * ---------------------------------------------------------------
      * Storage
      * ---------------------------------------------------------------
+     * Supported: "session", "database", "redis", "null", "multi"
      */
     'driver' => 'session',
 
     'storage' => [
-        'session',
         'database' => [
-            'model' => '',
-            'id' => '',
-            'items' => '',
+            'model'      => '',
+            'id'         => '',
+            'items'      => '',
             'conditions' => '',
         ],
+    ],
+
+    /*
+     * ---------------------------------------------------------------
+     * Driver-specific options
+     * ---------------------------------------------------------------
+     */
+    'drivers' => [
+        'redis' => [
+            'connection' => 'default',
+            'ttl'        => 60 * 24 * 7, // 7 days in minutes
+        ],
+
+        'multi' => ['session', 'database'],
     ],
 ];
