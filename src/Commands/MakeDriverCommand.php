@@ -15,11 +15,19 @@ class MakeDriverCommand extends Command
     public function handle(): int
     {
         $name = $this->argument('name');
+
+        if (! preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $name)) {
+            $this->error("Invalid class name: [{$name}]. Must be a valid PHP class name.");
+
+            return self::FAILURE;
+        }
+
         $directory = app_path('Cart/Drivers');
         $path = "{$directory}/{$name}.php";
 
         if (file_exists($path)) {
             $this->error("Driver already exists: app/Cart/Drivers/{$name}.php");
+
             return self::FAILURE;
         }
 
@@ -27,7 +35,12 @@ class MakeDriverCommand extends Command
             mkdir($directory, 0755, true);
         }
 
-        file_put_contents($path, static::stub($name));
+        if (file_put_contents($path, static::stub($name)) === false) {
+            $this->error("Failed to write file: {$path}");
+
+            return self::FAILURE;
+        }
+
         $this->info("Driver created: app/Cart/Drivers/{$name}.php");
         $this->line("  Register it in config/cart.php under <comment>drivers</comment>.");
 

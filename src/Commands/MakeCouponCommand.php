@@ -15,11 +15,19 @@ class MakeCouponCommand extends Command
     public function handle(): int
     {
         $name = $this->argument('name');
+
+        if (! preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*$/', $name)) {
+            $this->error("Invalid class name: [{$name}]. Must be a valid PHP class name.");
+
+            return self::FAILURE;
+        }
+
         $directory = app_path('Cart/Coupons');
         $path = "{$directory}/{$name}.php";
 
         if (file_exists($path)) {
             $this->error("Coupon already exists: app/Cart/Coupons/{$name}.php");
+
             return self::FAILURE;
         }
 
@@ -27,7 +35,12 @@ class MakeCouponCommand extends Command
             mkdir($directory, 0755, true);
         }
 
-        file_put_contents($path, static::stub($name));
+        if (file_put_contents($path, static::stub($name)) === false) {
+            $this->error("Failed to write file: {$path}");
+
+            return self::FAILURE;
+        }
+
         $this->info("Coupon created: app/Cart/Coupons/{$name}.php");
 
         return self::SUCCESS;

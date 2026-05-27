@@ -14,8 +14,6 @@ use Wearepixel\Cart\Commands\MakeTaxCommand;
 
 class CartServiceProvider extends ServiceProvider
 {
-    protected $defer = false;
-
     public function boot(): void
     {
         if ($this->app->runningInConsole()) {
