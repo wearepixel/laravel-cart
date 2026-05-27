@@ -57,7 +57,7 @@ class RedisDriver implements CartDriver
     {
         $data = $this->redis->connection($this->connection)->get($this->itemsKey());
 
-        return $data ? json_decode($data, true) : [];
+        return $data ? (json_decode($data, true) ?? []) : [];
     }
 
     public function putItems(array $items): void
@@ -73,7 +73,7 @@ class RedisDriver implements CartDriver
     {
         $data = $this->redis->connection($this->connection)->get($this->conditionsKey());
 
-        return $data ? json_decode($data, true) : [];
+        return $data ? (json_decode($data, true) ?? []) : [];
     }
 
     public function putConditions(array $conditions): void

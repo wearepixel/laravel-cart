@@ -77,4 +77,8 @@ describe('MultiDriver', function () {
     test('throws when constructed with no drivers', function () {
         expect(fn() => new MultiDriver([]))->toThrow(InvalidArgumentException::class);
     });
+
+    test('getSessionModel delegates to primary driver', function () {
+        expect($this->driver->getSessionModel())->toBeNull();
+    });
 });
