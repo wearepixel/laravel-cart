@@ -2,19 +2,23 @@
 
 use Wearepixel\Cart\Cart;
 use Wearepixel\Cart\CartCondition;
+use Wearepixel\Cart\Drivers\DatabaseDriver;
 use Wearepixel\Cart\Tests\Helpers\MockCartModel;
 
 beforeEach(function () {
     $events = Mockery::mock('Illuminate\Contracts\Events\Dispatcher');
     $events->shouldReceive('dispatch');
 
-    $storage = new MockCartModel;
-
     $this->cart = new Cart(
-        $storage,
+        new DatabaseDriver(
+            MockCartModel::class,
+            'session_id',
+            'items',
+            'conditions',
+            'SAMPLESESSIONKEY',
+        ),
         $events,
         'cart',
-        'SAMPLESESSIONKEY',
         require (__DIR__ . '/../Helpers/ConfigDatabaseMock.php')
     );
 });
