@@ -9,11 +9,12 @@
 
 A Cart Implementation for Laravel.
 
-Supported Laravel Versions: 10, 11, and 12.
+Supported Laravel Versions: 10, 11, 12, and 13.
 
 For Laravel 9.0 and below, please use version [1.0](https://github.com/wearepixel/laravel-cart/releases/tag/1.0.12)
 
 ## Table of Contents
+
 - [Getting Started](#-getting-started)
 - [Demo](#-deni)
 - [Documentation](#-documentation)
@@ -27,6 +28,7 @@ For Laravel 9.0 and below, please use version [1.0](https://github.com/wearepixe
 - [License](#-license)
 
 ## 🚀 Getting Started
+
 ### 🔥 Installing
 
 Install the package through [Composer](http://getcomposer.org/).
@@ -107,7 +109,6 @@ Defaults to `down`.
 'round_mode' => env('LARAVEL_CART_ROUND_MODE', 'down'),
 ```
 
-
 ### Basic Usage
 
 The cart has a default sessionKey that holds the cart data and stores it in the session, so you can have multiple carts for multiple users.
@@ -168,8 +169,8 @@ Cart::add([
     [], // attributes
     [
         [
-            'name' => '10% Off', 
-            'type' => 'discount', 
+            'name' => '10% Off',
+            'type' => 'discount',
             'value' => '-10%'
         ]
     ] // conditions
@@ -199,7 +200,7 @@ Cart::add(
 ```php
 Cart::update(
     456, # product id
-    [   
+    [
         'name' => 'New Item Name', // new item name
         'price' => 98.67, // new item price as a float or string
     ]
@@ -215,7 +216,7 @@ Cart::update(
 
 // reducing it...
 Cart::update(
-    456, 
+    456,
     [
         'quantity' => -1, // so if from 4 to 3
     ]

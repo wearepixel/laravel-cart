@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.4/phpunit.xsd"
->
-<source>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bootstrap="tests/bootstrap.php" colors="true" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/11.5/phpunit.xsd">
+  <source ignoreIndirectDeprecations="true">
     <include>
       <directory suffix=".php">./src</directory>
     </include>
   </source>
-    <testsuites>
+  <testsuites>
     <testsuite name="Laravel Cart Test Suite">
       <directory>tests</directory>
     </testsuite>
