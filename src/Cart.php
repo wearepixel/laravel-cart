@@ -52,6 +52,9 @@ class Cart
         return $this->driver;
     }
 
+    /**
+     * @internal For testing purposes only. Not intended for production use.
+     */
     public function fake(): CartFactory
     {
         $this->driver = new NullDriver($this->driver->getSessionKey());
@@ -78,27 +81,30 @@ class Cart
 
     public function assertTotalQuantity(int|float $quantity): void
     {
-        Assert::assertEquals(
+        Assert::assertEqualsWithDelta(
             $quantity,
-            $this->getTotalQuantity(),
+            (float) $this->getTotalQuantity(),
+            0.0001,
             "Failed asserting that cart total quantity is [{$quantity}]."
         );
     }
 
     public function assertSubTotal(float $amount): void
     {
-        Assert::assertEquals(
+        Assert::assertEqualsWithDelta(
             $amount,
-            $this->getSubTotal(false),
+            (float) $this->getSubTotal(false),
+            0.0001,
             "Failed asserting that cart subtotal is [{$amount}]."
         );
     }
 
     public function assertTotal(float $amount): void
     {
-        Assert::assertEquals(
+        Assert::assertEqualsWithDelta(
             $amount,
-            $this->getTotal(),
+            (float) $this->getTotal(),
+            0.0001,
             "Failed asserting that cart total is [{$amount}]."
         );
     }

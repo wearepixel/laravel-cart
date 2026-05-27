@@ -58,6 +58,14 @@ describe('CartFactory', function () {
         expect(array_unique($ids))->toHaveCount(3);
     });
 
+    test('consecutive withItems calls produce unique IDs', function () {
+        $this->factory->withItems(2)->withItems(2);
+
+        $ids = $this->cart->getContent()->keys()->toArray();
+        expect(array_unique($ids))->toHaveCount(4);
+        expect($this->cart->getContent()->count())->toBe(4);
+    });
+
     test('withCoupon adds a coupon condition to the cart', function () {
         $coupon = new class extends \Wearepixel\Cart\Coupons\Coupon {
             protected string $code = 'SAVE10';
