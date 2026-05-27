@@ -5,10 +5,13 @@ declare(strict_types=1);
 namespace Wearepixel\Cart;
 
 use Closure;
+use PHPUnit\Framework\Assert;
 use Wearepixel\Cart\Coupons\Coupon;
+use Wearepixel\Cart\Drivers\NullDriver;
 use Wearepixel\Cart\Helpers\Helpers;
 use Wearepixel\Cart\Shipping\ShippingRate;
 use Wearepixel\Cart\Tax\TaxRule;
+use Wearepixel\Cart\Testing\CartFactory;
 use Wearepixel\Cart\Validators\CartItemValidator;
 use Wearepixel\Cart\Exceptions\InvalidItemException;
 use Wearepixel\Cart\Exceptions\UnknownModelException;
@@ -47,6 +50,81 @@ class Cart
     public function getDriver(): CartDriver
     {
         return $this->driver;
+    }
+
+    public function fake(): CartFactory
+    {
+        $this->driver = new NullDriver($this->driver->getSessionKey());
+
+        return new CartFactory($this);
+    }
+
+    public function assertContains(int|string $id): void
+    {
+        Assert::assertTrue(
+            $this->has($id),
+            "Failed asserting that cart contains item [{$id}]."
+        );
+    }
+
+    public function assertCount(int $count): void
+    {
+        Assert::assertCount(
+            $count,
+            $this->getContent(),
+            "Failed asserting that cart has [{$count}] items."
+        );
+    }
+
+    public function assertTotalQuantity(int|float $quantity): void
+    {
+        Assert::assertEquals(
+            $quantity,
+            $this->getTotalQuantity(),
+            "Failed asserting that cart total quantity is [{$quantity}]."
+        );
+    }
+
+    public function assertSubTotal(float $amount): void
+    {
+        Assert::assertEquals(
+            $amount,
+            $this->getSubTotal(false),
+            "Failed asserting that cart subtotal is [{$amount}]."
+        );
+    }
+
+    public function assertTotal(float $amount): void
+    {
+        Assert::assertEquals(
+            $amount,
+            $this->getTotal(),
+            "Failed asserting that cart total is [{$amount}]."
+        );
+    }
+
+    public function assertConditionApplied(string $conditionName): void
+    {
+        Assert::assertNotNull(
+            $this->getCondition($conditionName),
+            "Failed asserting that condition [{$conditionName}] is applied to the cart."
+        );
+    }
+
+    public function assertEmpty(): void
+    {
+        Assert::assertTrue(
+            $this->isEmpty(),
+            'Failed asserting that the cart is empty.'
+        );
+    }
+
+    public function assertNotEmpty(): void
+    {
+        Assert::assertFalse(
+            $this->isEmpty(),
+            'Failed asserting that the cart is not empty.'
+        );
     }
 
     public function getSessionKey(): string
