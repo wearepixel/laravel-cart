@@ -5,7 +5,10 @@ declare(strict_types=1);
 namespace Wearepixel\Cart;
 
 use Closure;
+use Wearepixel\Cart\Coupons\Coupon;
 use Wearepixel\Cart\Helpers\Helpers;
+use Wearepixel\Cart\Shipping\ShippingRate;
+use Wearepixel\Cart\Tax\TaxRule;
 use Wearepixel\Cart\Validators\CartItemValidator;
 use Wearepixel\Cart\Exceptions\InvalidItemException;
 use Wearepixel\Cart\Exceptions\UnknownModelException;
@@ -274,6 +277,21 @@ class Cart
         $this->saveConditions($conditions);
 
         return $this;
+    }
+
+    public function coupon(Coupon $coupon): self
+    {
+        return $this->condition($coupon->toCondition());
+    }
+
+    public function tax(TaxRule $taxRule): self
+    {
+        return $this->condition($taxRule->toCondition());
+    }
+
+    public function shipping(ShippingRate $shippingRate): self
+    {
+        return $this->condition($shippingRate->toCondition());
     }
 
     public function getConditions(bool $array = false, bool $active = false): CartConditionCollection|array
