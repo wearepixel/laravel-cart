@@ -22,7 +22,11 @@ For Laravel 9.0 and below, please use version [1.0](https://github.com/wearepixe
   - [Basic Usage](#basic-usage)
   - [Conditions](#conditions)
   - [Cart Items](#cart-items)
-  - [Database Support](#database-support)
+  - [Storage Drivers](#storage-drivers)
+  - [Artisan Generators](#artisan-generators)
+  - [First-class Objects](#first-class-objects)
+  - [Testing](#testing)
+  - [Livewire / Inertia](#livewire--inertia)
   - [Events](#events)
 - [Credits](#-credits)
 - [License](#-license)
@@ -73,7 +77,7 @@ $total = Cart::getTotal();
 You can publish the configuration file to customize various options.
 
 ```php
-php artisan vendor:publish --provider="Wearepixel\Cart\CartServiceProvider" --tag="config"
+php artisan vendor:publish --provider="Wearepixel\Cart\CartServiceProvider" --tag="cart-config"
 ```
 
 #### Formatting Numbers
@@ -693,54 +697,281 @@ $item->getPriceSumWithConditions();
 $item->getPriceSumWithConditions();
 ```
 
-### Storage Options
+### Storage Drivers
 
-By default the cart is stored in the session, but there are times you may want to store the cart in the database.
+The cart supports multiple storage backends via a driver system.
 
-For instance, you may want to store the cart in the database so that the cart can be retrieved even after the user logs out or closes the browser, or you may want to add cart timeouts and support for multiple computers.
+#### Session (default)
 
-#### Session
+Cart data is stored in the Laravel session. No configuration needed.
 
-The cart is stored in the session by default, using Laravel's in-built SessionManager.
+#### Database
 
-#### Database Support
+Store the cart in a database table for persistence across sessions.
 
-To get started, you'll need to create a new model for your Cart, the package requires only 3 columns, but you're free to extend this as you wish and add more columns.
-
-You can utilise the [events](#events) provided by the package to store additional information alongside the cart.
+**1. Create a migration:**
 
 ```php
-$table->string('session_id'); // this handles the session id of the cart
-$table->text('items'); // this will store the cart items
-$table->text('conditions'); // this will store the cart level conditions
+$table->string('session_id');
+$table->text('items');
+$table->text('conditions');
 ```
 
-Then add some json casts to your model and fillable columns:
+**2. Add casts to your model:**
 
 ```php
 protected $guarded = [];
 
 protected $casts = [
-    'items' => 'array',
+    'items'      => 'array',
     'conditions' => 'array',
 ];
 ```
 
-Then update the configuration file to use the database driver:
+**3. Update `config/cart.php`:**
 
 ```php
 'driver' => 'database',
 
-'storage' => [
-    'session',
+'drivers' => [
     'database' => [
-        'model' => \App\Models\Cart::class, // your model here
-        'id' => 'session_id',
-        'items' => 'items',
+        'model'      => \App\Models\Cart::class,
+        'id'         => 'session_id',
+        'items'      => 'items',
         'conditions' => 'conditions',
     ],
 ],
 ```
+
+#### Redis
+
+Store the cart in Redis with an optional TTL.
+
+```php
+'driver' => 'redis',
+
+'drivers' => [
+    'redis' => [
+        'connection' => 'default',
+        'ttl'        => 604800, // 7 days in seconds
+    ],
+],
+```
+
+#### Multi-driver
+
+Write to multiple drivers simultaneously. Reads come from the first driver listed.
+
+```php
+'driver' => 'multi',
+
+'drivers' => [
+    'multi' => ['session', 'database'],
+],
+```
+
+#### Custom driver
+
+Generate a custom driver stub with `php artisan cart:make:driver MyDriver` then register it in `CartManager`.
+
+### Artisan Generators
+
+#### Install: **cart:install**
+
+Publishes the config file and scaffolds `app/Cart/` with subdirectories for your coupons, tax rules, shipping rates, and custom drivers.
+
+```bash
+php artisan cart:install
+```
+
+#### Generate a Coupon: **cart:make:coupon**
+
+```bash
+php artisan cart:make:coupon TenPercentOff
+```
+
+Creates `app/Cart/Coupons/TenPercentOff.php` extending `Wearepixel\Cart\Coupons\Coupon`.
+
+#### Generate a Tax Rule: **cart:make:tax**
+
+```bash
+php artisan cart:make:tax GstTaxRule
+```
+
+Creates `app/Cart/Tax/GstTaxRule.php` extending `Wearepixel\Cart\Tax\TaxRule`.
+
+#### Generate a Shipping Rate: **cart:make:shipping**
+
+```bash
+php artisan cart:make:shipping FlatRateShipping
+```
+
+Creates `app/Cart/Shipping/FlatRateShipping.php` extending `Wearepixel\Cart\Shipping\ShippingRate`.
+
+#### Generate a Custom Driver: **cart:make:driver**
+
+```bash
+php artisan cart:make:driver ElasticsearchDriver
+```
+
+Creates `app/Cart/Drivers/ElasticsearchDriver.php` implementing `CartDriver`.
+
+#### Debug: **cart:debug**
+
+Dumps the current cart state. Not available in production.
+
+```bash
+php artisan cart:debug
+```
+
+### First-class Objects
+
+Instead of building raw `CartCondition` arrays, you can extend the provided base classes.
+
+#### Coupon
+
+```php
+namespace App\Cart\Coupons;
+
+use Wearepixel\Cart\Coupons\Coupon;
+
+class TenPercentOff extends Coupon
+{
+    protected string $code = 'SAVE10';
+    protected string $value = '-10%';
+    protected string $target = 'subtotal';
+
+    public function isValid(): bool
+    {
+        return true; // add your own validation logic
+    }
+}
+
+// Apply to the cart
+Cart::coupon(new TenPercentOff);
+```
+
+#### TaxRule
+
+```php
+namespace App\Cart\Tax;
+
+use Wearepixel\Cart\Tax\TaxRule;
+
+class GstTaxRule extends TaxRule
+{
+    protected string $name = 'GST';
+    protected string $value = '10%';
+    protected string $target = 'subtotal';
+
+    public function isApplicable(): bool
+    {
+        return true;
+    }
+}
+
+Cart::tax(new GstTaxRule);
+```
+
+#### ShippingRate
+
+```php
+namespace App\Cart\Shipping;
+
+use Wearepixel\Cart\Shipping\ShippingRate;
+
+class FlatRateShipping extends ShippingRate
+{
+    protected string $name = 'Standard Shipping';
+    protected string $value = '+10';
+    protected string $target = 'total';
+
+    public function isApplicable(): bool
+    {
+        return true;
+    }
+}
+
+Cart::shipping(new FlatRateShipping);
+```
+
+### Testing
+
+#### Cart::fake()
+
+`Cart::fake()` replaces the active driver with an in-memory `NullDriver` and returns a `CartFactory` for seeding test state.
+
+```php
+use Wearepixel\Cart\Cart;
+
+// In your test
+$factory = app('cart')->fake();
+
+$factory->withItems(3);
+$factory->withCondition(new CartCondition(['name' => 'GST', 'type' => 'tax', 'value' => '10%', 'target' => 'subtotal']));
+
+// Or chain it
+app('cart')->fake()->withItems(2)->withCondition($condition);
+```
+
+#### Assertion Methods
+
+After `fake()`, the `Cart` instance exposes assertion methods:
+
+```php
+$cart = app('cart');
+$cart->fake();
+$cart->add(1, 'Widget', 50.00, 2);
+
+$cart->assertContains(1);            // item exists
+$cart->assertCount(1);               // 1 distinct item
+$cart->assertTotalQuantity(2);       // 2 units
+$cart->assertSubTotal(100.00);       // subtotal
+$cart->assertTotal(100.00);          // total
+$cart->assertNotEmpty();             // cart has items
+$cart->assertEmpty();                // cart is empty
+$cart->assertConditionApplied('GST'); // condition present
+```
+
+### Livewire / Inertia
+
+#### HasCart trait (Livewire)
+
+Add `HasCart` to any Livewire component to get reactive cart state and proxy methods.
+
+```php
+use Wearepixel\Cart\Concerns\HasCart;
+
+class CartComponent extends Component
+{
+    use HasCart;
+
+    // $cartItems, $cartCount, $cartSubTotal, $cartTotal are auto-populated
+
+    public function addToCart(int $id, string $name, float $price): void
+    {
+        $this->cartAdd($id, $name, $price, 1);
+        // $cartCount, $cartSubTotal etc. update automatically
+    }
+}
+```
+
+#### ShareCartWithInertia (Inertia)
+
+Share cart state on every Inertia response from your `HandleInertiaRequests` middleware:
+
+```php
+use Wearepixel\Cart\Concerns\ShareCartWithInertia;
+
+public function share(Request $request): array
+{
+    return array_merge(parent::share($request), [
+        'cart' => fn() => ShareCartWithInertia::data(),
+    ]);
+}
+```
+
+This shares `cart.items`, `cart.subtotal`, `cart.total`, and `cart.count` with every page.
 
 ### Events
 
