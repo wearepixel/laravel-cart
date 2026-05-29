@@ -14,7 +14,7 @@ use Wearepixel\Cart\ItemCollection;
  *
  * @method static ItemCollection|null get(int|string $itemId)
  * @method static bool has(int|string $itemId)
- * @method static void add(int|string $id, string $name, int|float $price, int $quantity, array $attributes = [], CartCondition|array $conditions = [], string $associatedModel = '')
+ * @method static self add(string|int|array<string, mixed> $id, string|null $name = null, float|null $price = null, int|float|null $quantity = null, array<string, mixed> $attributes = [], CartCondition|array<mixed> $conditions = [], string|null $associatedModel = null)
  * @method static bool update(int|string $id, array $data)
  * @method static void remove(int|string $id)
  * @method static void clear()
