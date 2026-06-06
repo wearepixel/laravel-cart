@@ -342,10 +342,6 @@ class Cart
             return $this;
         }
 
-        if (! $condition instanceof CartCondition) {
-            throw new InvalidConditionException('Argument 1 must be an instance of \'Wearepixel\Cart\CartCondition\'');
-        }
-
         $conditions = $this->getConditions();
 
         if ($condition->getOrder() === 0) {
@@ -735,6 +731,6 @@ class Cart
             $eventData[$type] = $data;
         }
 
-        return $this->events->dispatch('LaravelCart.' . $name, array_values([$eventData, $this]), true);
+        return $this->events->dispatch('LaravelCart.' . $name, [$eventData, $this], true);
     }
 }

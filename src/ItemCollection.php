@@ -5,6 +5,14 @@ namespace Wearepixel\Cart;
 use Illuminate\Support\Collection;
 use Wearepixel\Cart\Helpers\Helpers;
 
+/**
+ * @property mixed $id
+ * @property string $name
+ * @property float|int $price
+ * @property int|float $quantity
+ * @property array<string, mixed> $attributes
+ * @property mixed $conditions
+ */
 class ItemCollection extends Collection
 {
     /**
@@ -46,7 +54,7 @@ class ItemCollection extends Collection
     /**
      * return the associated model of an item
      *
-     * @return bool
+     * @return mixed
      */
     protected function getAssociatedModel()
     {
@@ -97,7 +105,7 @@ class ItemCollection extends Collection
 
         // check if we're already an array of CartConditions
         foreach ($conditions as $key => $condition) {
-            if ($condition instanceof CartCondition) {
+            if (is_object($condition) && $condition instanceof CartCondition) {
                 return $conditions;
             }
         }
@@ -105,7 +113,7 @@ class ItemCollection extends Collection
         $hasSubArray = false;
 
         foreach ($conditions as $key => $condition) {
-            if (is_array($condition) && ! $condition instanceof CartCondition) {
+            if (is_array($condition)) {
                 $hasSubArray = true;
                 $conditionsArray[] = new CartCondition($condition);
             } elseif ($condition instanceof CartCondition) {

@@ -37,3 +37,7 @@ jobs:
 
       - name: Execute tests
         run: vendor/bin/pest
+
+      - name: Static analysis
+        run: vendor/bin/phpstan analyse --no-progress
+        if: matrix.php == '8.3'
