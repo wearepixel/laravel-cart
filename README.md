@@ -13,6 +13,8 @@ Supported Laravel Versions: 10, 11, 12, and 13.
 
 For Laravel 9.0 and below, please use version [1.0](https://github.com/wearepixel/laravel-cart/releases/tag/1.0.12)
 
+> **Upgrading from v2?** See the [Upgrade Guide](UPGRADE.md) for breaking changes and recommended v3 patterns.
+
 ## Table of Contents
 
 - [Getting Started](#-getting-started)
