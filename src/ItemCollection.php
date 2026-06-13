@@ -56,7 +56,7 @@ class ItemCollection extends Collection
      *
      * @return mixed
      */
-    protected function getAssociatedModel()
+    protected function getAssociatedModel(): mixed
     {
         if (! $this->has('associatedModel')) {
             return null;
