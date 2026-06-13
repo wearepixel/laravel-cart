@@ -1,6 +1,6 @@
 {
   "name": "wearepixel/laravel-cart",
-  "version": "2.1.4",
+  "version": "3.0.0",
   "description": "A cart implementation for Laravel",
   "keywords": [
     "laravel",
@@ -30,7 +30,8 @@
     "mockery/mockery": "^2.0",
     "laravel/pint": "^1.21",
     "pestphp/pest": "^4.7",
-    "larapack/dd": "dev-master"
+    "larapack/dd": "dev-master",
+    "phpstan/phpstan": "2.2.x-dev"
   },
   "autoload": {
     "psr-4": {

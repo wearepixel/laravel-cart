@@ -3,6 +3,7 @@
 use Wearepixel\Cart\Cart;
 use Wearepixel\Cart\CartCondition;
 use Wearepixel\Cart\CartConditionCollection;
+use Wearepixel\Cart\Drivers\SessionDriver;
 use Wearepixel\Cart\Tests\Helpers\SessionMock;
 
 beforeEach(function () {
@@ -10,10 +11,9 @@ beforeEach(function () {
     $events->shouldReceive('dispatch');
 
     $this->cart = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'SAMPLESESSIONKEY'),
         $events,
         'cart',
-        'SAMPLESESSIONKEY',
         require (__DIR__ . '/../Helpers/ConfigConditionsMock.php')
     );
 });
@@ -950,8 +950,8 @@ describe('cart level conditions', function () {
 
         expect($this->cart->getCalculatedValueForCondition('Coupon Discount'))->toEqual(200.0, 'Coupon Discount should be 200.0');
         expect($this->cart->getCalculatedValueForCondition('Gift Card'))->toEqual(0, 'Gift Card should be 0');
-        expect($couponDiscount->getCalculatedValue())->toEqual(200.0, 'Coupon Discount value should be 200.0');
-        expect($giftCard->getCalculatedValue())->toEqual(0, 'Gift Card value should be 0');
+        expect($this->cart->getCondition('Coupon Discount')->getCalculatedValue(200.0))->toEqual(200.0, 'Coupon Discount value should be 200.0');
+        expect($this->cart->getCondition('Gift Card')->getCalculatedValue(0))->toEqual(0, 'Gift Card value should be 0');
     });
 
     test('calculate the subtotal correctly when one condition makes it $0, and the other adds $10', function () {

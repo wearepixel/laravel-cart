@@ -1,0 +1,14 @@
+parameters:
+    level: 5
+    phpVersion: 80300
+    paths:
+        - src
+    bootstrapFiles:
+        - phpstan-bootstrap.php
+    ignoreErrors:
+        # HasCart is a trait for external use in Livewire components — not used within this package.
+        - identifier: trait.unused
+        # PHPStan 2.x bundles PHP 8.4 stubs where PHP_ROUND_HALF_UP/DOWN map to 1/2 instead of 0/1.
+        # The code is correct at runtime on PHP 8.3. Remove once PHPStan stubs are corrected.
+        - message: '#Parameter \#3 \$mode of function round expects#'
+          path: src/Helpers/Helpers.php

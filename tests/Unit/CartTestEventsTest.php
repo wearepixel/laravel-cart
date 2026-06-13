@@ -1,6 +1,7 @@
 <?php
 
 use Wearepixel\Cart\Cart;
+use Wearepixel\Cart\Drivers\SessionDriver;
 use Wearepixel\Cart\Tests\Helpers\SessionMock;
 
 beforeEach(function () {});
@@ -14,10 +15,9 @@ test('event cart Created', function () {
     $events->shouldReceive('dispatch')->once()->with('LaravelCart.Created', Mockery::type('array'), true);
 
     $cart = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'SAMPLESESSIONKEY'),
         $events,
         'cart',
-        'SAMPLESESSIONKEY',
         require (__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
@@ -31,10 +31,9 @@ test('event cart adding', function () {
     $events->shouldReceive('dispatch')->once()->with('LaravelCart.Added', Mockery::type('array'), true);
 
     $cart = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'SAMPLESESSIONKEY'),
         $events,
         'cart',
-        'SAMPLESESSIONKEY',
         require (__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
@@ -50,10 +49,9 @@ test('event cart adding multiple times', function () {
     $events->shouldReceive('dispatch')->times(2)->with('LaravelCart.Added', Mockery::type('array'), true);
 
     $cart = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'SAMPLESESSIONKEY'),
         $events,
         'cart',
-        'SAMPLESESSIONKEY',
         require (__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
@@ -94,10 +92,9 @@ test('event cart adding multiple times scenario two', function () {
     ];
 
     $cart = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'SAMPLESESSIONKEY'),
         $events,
         'cart',
-        'SAMPLESESSIONKEY',
         require (__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
@@ -139,10 +136,9 @@ test('event cart remove item', function () {
     ];
 
     $cart = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'SAMPLESESSIONKEY'),
         $events,
         'cart',
-        'SAMPLESESSIONKEY',
         require (__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
@@ -186,10 +182,9 @@ test('event cart clear', function () {
     ];
 
     $cart = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'SAMPLESESSIONKEY'),
         $events,
         'cart',
-        'SAMPLESESSIONKEY',
         require (__DIR__ . '/../Helpers/ConfigMock.php')
     );
 

@@ -79,6 +79,14 @@ class CartCondition
     }
 
     /**
+     * Get the number of items this condition applies to (null = all items)
+     */
+    public function getAppliesToQuantity(): int|null
+    {
+        return isset($this->args['applies_to']) ? (int) $this->args['applies_to'] : null;
+    }
+
+    /**
      * get the additional attributes of a condition
      *
      * @return array
@@ -105,13 +113,11 @@ class CartCondition
     }
 
     /**
-     * Set the order to apply this condition. If no argument order is applied we return 0 as
-     * indicator that no assignment has been made
+     * Set the order to apply this condition.
      *
      * @param  int  $order
-     * @return int
      */
-    public function setOrder($order = 1)
+    public function setOrder($order = 1): void
     {
         $this->args['order'] = $order;
     }
@@ -139,8 +145,6 @@ class CartCondition
 
     /**
      * get the calculated value of this condition supplied by the subtotal|price
-     *
-     * @return mixed
      */
     public function getCalculatedValue($totalOrSubTotalOrPrice = null): int|float
     {

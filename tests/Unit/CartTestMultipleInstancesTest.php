@@ -1,6 +1,7 @@
 <?php
 
 use Wearepixel\Cart\Cart;
+use Wearepixel\Cart\Drivers\SessionDriver;
 use Wearepixel\Cart\Tests\Helpers\SessionMock;
 
 beforeEach(function () {
@@ -8,18 +9,16 @@ beforeEach(function () {
     $events->shouldReceive('dispatch');
 
     $this->cart1 = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'uniquesessionkey123'),
         $events,
         'shopping',
-        'uniquesessionkey123',
         require (__DIR__ . '/../Helpers/ConfigMock.php')
     );
 
     $this->cart2 = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'uniquesessionkey456'),
         $events,
         'wishlist',
-        'uniquesessionkey456',
         require (__DIR__ . '/../Helpers/ConfigMock.php')
     );
 });

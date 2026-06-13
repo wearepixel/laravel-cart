@@ -5,6 +5,14 @@ namespace Wearepixel\Cart;
 use Illuminate\Support\Collection;
 use Wearepixel\Cart\Helpers\Helpers;
 
+/**
+ * @property mixed $id
+ * @property string $name
+ * @property float|int $price
+ * @property int|float $quantity
+ * @property array<string, mixed> $attributes
+ * @property mixed $conditions
+ */
 class ItemCollection extends Collection
 {
     /**
@@ -46,9 +54,9 @@ class ItemCollection extends Collection
     /**
      * return the associated model of an item
      *
-     * @return bool
+     * @return mixed
      */
-    protected function getAssociatedModel()
+    protected function getAssociatedModel(): mixed
     {
         if (! $this->has('associatedModel')) {
             return null;
@@ -97,7 +105,7 @@ class ItemCollection extends Collection
 
         // check if we're already an array of CartConditions
         foreach ($conditions as $key => $condition) {
-            if ($condition instanceof CartCondition) {
+            if (is_object($condition) && $condition instanceof CartCondition) {
                 return $conditions;
             }
         }
@@ -105,7 +113,7 @@ class ItemCollection extends Collection
         $hasSubArray = false;
 
         foreach ($conditions as $key => $condition) {
-            if (is_array($condition) && ! $condition instanceof CartCondition) {
+            if (is_array($condition)) {
                 $hasSubArray = true;
                 $conditionsArray[] = new CartCondition($condition);
             } elseif ($condition instanceof CartCondition) {
@@ -162,6 +170,31 @@ class ItemCollection extends Collection
      */
     public function getPriceSumWithConditions($formatted = true)
     {
-        return Helpers::formatValue($this->getPriceWithConditions(false) * $this->quantity, $formatted, $this->config);
+        $conditions = $this->hasConditions() ? $this->getConditions() : [];
+        $conditions = is_array($conditions) ? $conditions : [$conditions];
+
+        $hasLimit = collect($conditions)->some(fn ($c) => $c->getAppliesToQuantity() !== null);
+
+        if (! $hasLimit) {
+            return Helpers::formatValue($this->getPriceWithConditions(false) * $this->quantity, $formatted, $this->config);
+        }
+
+        $total = 0.0;
+
+        for ($i = 1; $i <= $this->quantity; $i++) {
+            $price = $this->price;
+
+            foreach ($conditions as $condition) {
+                $limit = $condition->getAppliesToQuantity();
+
+                if ($limit === null || $i <= $limit) {
+                    $price = $condition->applyCondition($price);
+                }
+            }
+
+            $total += $price;
+        }
+
+        return Helpers::formatValue($total, $formatted, $this->config);
     }
 }

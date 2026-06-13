@@ -1,6 +1,7 @@
 <?php
 
 use Wearepixel\Cart\Cart;
+use Wearepixel\Cart\Drivers\SessionDriver;
 use Wearepixel\Cart\Tests\Helpers\MockProduct;
 use Wearepixel\Cart\Tests\Helpers\SessionMock;
 
@@ -9,10 +10,9 @@ beforeEach(function () {
     $events->shouldReceive('dispatch');
 
     $this->cart = new Cart(
-        new SessionMock,
+        new SessionDriver(new SessionMock, 'SAMPLESESSIONKEY'),
         $events,
         'shopping',
-        'SAMPLESESSIONKEY',
         require (__DIR__ . '/../Helpers/ConfigMock.php')
     );
 });
