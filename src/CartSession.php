@@ -159,10 +159,8 @@ class CartSession
 
         $deleted = $this->session->delete();
 
-        $this->session = [
-            $this->itemsKey => [],
-            $this->conditionsKey => [],
-        ];
+        $this->session[$this->itemsKey] = [];
+        $this->session[$this->conditionsKey] = [];
 
         return $deleted;
     }

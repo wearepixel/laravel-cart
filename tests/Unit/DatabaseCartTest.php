@@ -123,4 +123,23 @@ describe('database cart', function () {
         expect($this->cart->getContent()->count())->toEqual(0, 'Cart content should be 0');
         expect(MockCartModel::all()->count())->toEqual(0, 'The carts database table should have 0 rows');
     });
+
+    test('can clear cart conditions after clearing the cart', function () {
+        $condition = new CartCondition([
+            'name' => '10% Off',
+            'type' => 'coupon',
+            'target' => 'subtotal',
+            'value' => '-10%',
+        ]);
+
+        $this->cart->add(1, 'Sample Item', 100.99, 2, []);
+        $this->cart->condition($condition);
+
+        $this->cart->clear();
+
+        // This was throwing "Call to a member function save() on array"
+        // because clear() replaced $this->session with a plain array
+        expect(fn () => $this->cart->clearCartConditions())->not->toThrow(Error::class);
+        expect($this->cart->getConditions())->toBeEmpty();
+    });
 });
