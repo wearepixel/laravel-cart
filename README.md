@@ -607,6 +607,42 @@ $item = [
 Cart::add($item);
 ```
 
+##### Limiting a condition to a specific quantity of items
+
+By default, an item condition applies to every unit of the item. Use `applies_to` to limit it to the first N units:
+
+```php
+// 5% off the first item only - for 2x $50 items: (50*0.95) + 50 = $97.50
+$firstItemDiscount = new CartCondition([
+    'name' => '5% Off First Item',
+    'type' => 'discount',
+    'value' => '-5%',
+    'applies_to' => 1,
+]);
+
+Cart::add([
+    'id' => 1,
+    'name' => 'Widget',
+    'price' => 50.00,
+    'quantity' => 2,
+    'attributes' => [],
+    'conditions' => $firstItemDiscount,
+]);
+
+Cart::getSubTotal(); // 97.50
+```
+
+When combining conditions, those without `applies_to` apply to every unit while those with `applies_to` only apply to the first N:
+
+```php
+$limitedDiscount = new CartCondition(['name' => '10% Off First', 'type' => 'discount', 'value' => '-10%', 'applies_to' => 1]);
+$globalDiscount  = new CartCondition(['name' => '5% Off All',   'type' => 'discount', 'value' => '-5%']);
+
+// Item 1: 100 * 0.90 * 0.95 = 85.50
+// Item 2: 100 * 0.95        = 95.00
+// Subtotal: 180.50
+```
+
 > NOTE: All cart per-item conditions should be added before calling **Cart::getSubTotal()**
 
 Then Finally you can call **Cart::getSubTotal()** to get the Cart sub total with the applied conditions on each of the items.

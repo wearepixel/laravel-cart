@@ -170,6 +170,31 @@ class ItemCollection extends Collection
      */
     public function getPriceSumWithConditions($formatted = true)
     {
-        return Helpers::formatValue($this->getPriceWithConditions(false) * $this->quantity, $formatted, $this->config);
+        $conditions = $this->hasConditions() ? $this->getConditions() : [];
+        $conditions = is_array($conditions) ? $conditions : [$conditions];
+
+        $hasLimit = collect($conditions)->some(fn ($c) => $c->getAppliesToQuantity() !== null);
+
+        if (! $hasLimit) {
+            return Helpers::formatValue($this->getPriceWithConditions(false) * $this->quantity, $formatted, $this->config);
+        }
+
+        $total = 0.0;
+
+        for ($i = 1; $i <= $this->quantity; $i++) {
+            $price = $this->price;
+
+            foreach ($conditions as $condition) {
+                $limit = $condition->getAppliesToQuantity();
+
+                if ($limit === null || $i <= $limit) {
+                    $price = $condition->applyCondition($price);
+                }
+            }
+
+            $total += $price;
+        }
+
+        return Helpers::formatValue($total, $formatted, $this->config);
     }
 }

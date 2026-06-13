@@ -79,6 +79,14 @@ class CartCondition
     }
 
     /**
+     * Get the number of items this condition applies to (null = all items)
+     */
+    public function getAppliesToQuantity(): int|null
+    {
+        return isset($this->args['applies_to']) ? (int) $this->args['applies_to'] : null;
+    }
+
+    /**
      * get the additional attributes of a condition
      *
      * @return array
