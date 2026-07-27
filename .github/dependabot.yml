@@ -8,6 +8,7 @@ updates:
     open-pull-requests-limit: 10
     groups:
       actions:
+        applies-to: version-updates
         patterns: ["*"]
     commit-message:
       prefix: "chore"
@@ -23,9 +24,13 @@ updates:
     open-pull-requests-limit: 10
     groups:
       php-minor-patch:
+        applies-to: version-updates
         update-types:
           - "minor"
           - "patch"
+      php-security:
+        applies-to: security-updates
+        patterns: ["*"]
     commit-message:
       prefix: "chore"
       include: "scope"
