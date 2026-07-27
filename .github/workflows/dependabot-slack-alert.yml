@@ -1,0 +1,98 @@
+name: Dependabot Slack Alert
+
+on:
+  pull_request_target:
+    types: [opened]
+
+jobs:
+  notify:
+    name: Notify Slack of major update
+    runs-on: ubuntu-latest
+    if: github.actor == 'dependabot[bot]'
+    steps:
+      - name: Check if major version bump
+        id: check
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          from_major=$(echo "$PR_TITLE" | grep -oP 'from \K[0-9]+' | head -1)
+          to_major=$(echo "$PR_TITLE" | grep -oP 'to \K[0-9]+' | head -1)
+
+          if [ -n "$from_major" ] && [ -n "$to_major" ] && [ "$from_major" != "$to_major" ]; then
+            echo "is_major=true" >> $GITHUB_OUTPUT
+            echo "Major bump detected: $from_major -> $to_major"
+          else
+            echo "is_major=false" >> $GITHUB_OUTPUT
+            echo "Minor/patch bump, skipping"
+          fi
+
+      - name: Send Slack alert
+        if: steps.check.outputs.is_major == 'true'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "SLACK_WEBHOOK_URL not configured for this repo, skipping"
+            exit 0
+          fi
+
+          payload=$(jq -n \
+            --arg repo "$REPO" \
+            --arg title "$PR_TITLE" \
+            --arg url "$PR_URL" \
+            --arg pr "#$PR_NUMBER" \
+            '{
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: ":dependabot: *Major dependency update requires review*"
+                  }
+                },
+                {
+                  type: "section",
+                  fields: [
+                    {type: "mrkdwn", text: ("*Repository*\n`" + $repo + "`")},
+                    {type: "mrkdwn", text: ("*Pull Request*\n<" + $url + "|" + $pr + ">") }
+                  ]
+                },
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: $title
+                  }
+                },
+                {
+                  type: "context",
+                  elements: [
+                    {
+                      type: "mrkdwn",
+                      text: "Major version bumps are not auto-merged as they may contain breaking changes."
+                    }
+                  ]
+                },
+                {
+                  type: "actions",
+                  elements: [
+                    {
+                      type: "button",
+                      text: {type: "plain_text", text: "Review PR"},
+                      url: $url,
+                      style: "primary"
+                    }
+                  ]
+                }
+              ]
+            }')
+
+          curl -s -o /dev/null -w "%{http_code}" -X POST "$SLACK_WEBHOOK_URL" \
+            -H "Content-type: application/json" \
+            --data "$payload" | grep -q "^200$" \
+            && echo "Slack notification sent" \
+            || echo "Slack notification failed"
