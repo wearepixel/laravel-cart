@@ -42,7 +42,7 @@ class MakeDriverCommand extends Command
         }
 
         $this->info("Driver created: app/Cart/Drivers/{$name}.php");
-        $this->line("  Register it in config/cart.php under <comment>drivers</comment>.");
+        $this->line("  Register it with <comment>Cart::extend()</comment> in a service provider's boot() method, then set 'driver' to its name in config/cart.php.");
 
         return self::SUCCESS;
     }
