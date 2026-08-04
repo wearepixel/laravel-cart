@@ -7,11 +7,11 @@
 [![License](https://poser.pugx.org/wearepixel/laravel-cart/license.svg)](https://packagist.org/packages/wearepixel/laravel-cart)
 [![Free](https://img.shields.io/badge/free_for_non_commercial_use-brightgreen)](#-license)
 
-A Cart Implementation for Laravel.
+A Cart Implementation for Laravel. To learn all about it, head over to the [extensive documentation](https://wearepixel.com.au/docs/laravel-cart/v3/introduction).
 
-Supported Laravel Versions: 10, 11, 12, and 13.
+Supported Laravel Versions: 11, 12, and 13.
 
-For Laravel 9.0 and below, please use version [1.0](https://github.com/wearepixel/laravel-cart/releases/tag/1.0.12)
+For Laravel 10.0 and below, please use version [1.0](https://github.com/wearepixel/laravel-cart/releases/tag/1.0.12)
 
 > **Upgrading from v2?** See the [Upgrade Guide](https://wearepixel.com.au/docs/laravel-cart/v3/upgrade-guide) for breaking changes and recommended v3 patterns.
 
@@ -25,7 +25,7 @@ composer require wearepixel/laravel-cart
 
 ## Documentation
 
-Full documentation, including configuration, usage, conditions, storage drivers, testing, and the v2 upgrade guide, is available at [wearepixel.com.au/docs/laravel-cart](https://wearepixel.com.au/docs/laravel-cart).
+Full documentation, including configuration, usage, conditions, storage drivers, testing, and the v2 upgrade guide, is available at [wearepixel.com.au/docs/laravel-cart](https://wearepixel.com.au/docs/laravel-cart/v3/introduction).
 
 ## 🫡 Credits
 
