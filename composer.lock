@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "56b40d3f17cc40f1b62c3f71a3601af7",
+    "content-hash": "adce585bac784ac7803d7be6f7172a3f",
     "packages": [
         {
             "name": "brick/math",
@@ -6520,11 +6520,11 @@
         },
         {
             "name": "phpstan/phpstan",
-            "version": "2.2.x-dev",
+            "version": "2.3.4",
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/5c0bbadd35255710f7d2402cd6213a0bc34cfa34",
-                "reference": "5c0bbadd35255710f7d2402cd6213a0bc34cfa34",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/f20ce6f3c82556cfcfc086b152445a12d1d64fff",
+                "reference": "f20ce6f3c82556cfcfc086b152445a12d1d64fff",
                 "shasum": ""
             },
             "require": {
@@ -6533,7 +6533,6 @@
             "conflict": {
                 "phpstan/phpstan-shim": "*"
             },
-            "default-branch": true,
             "bin": [
                 "phpstan",
                 "phpstan.phar"
@@ -6581,7 +6580,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-06-05T16:36:10+00:00"
+            "time": "2026-10-28T22:38:53+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -8254,8 +8253,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "larapack/dd": 20,
-        "phpstan/phpstan": 20
+        "larapack/dd": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
